@@ -1,0 +1,17 @@
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Reflection;
+global using System.Text;
+global using System;
+global using SunamoExceptions.OnlyInSE;
+global using SunamoValues;
+global using System.Data;
+global using System.Text.RegularExpressions;
+global using System.Collections.Specialized;
+global using System.IO;
+global using SunamoArgs;
+global using System.Net;
+global using SunamoUri._sunamo;
+global using SunamoDictionary;
+global using SunamoStringReplace;
+global using SunamoI18N.Values;
