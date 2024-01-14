@@ -210,7 +210,7 @@ public partial class UH
             }
             else
             {
-                if (i == p.Count && Path.GetExtension(item) != "")
+                if (i == p.Count && FS.GetExtension(item) != "")
                 {
                     vr.Append(item);
                 }

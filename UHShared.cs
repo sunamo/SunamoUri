@@ -217,7 +217,7 @@ public partial class UH
 
     public static string GetExtension(string image)
     {
-        return Path.GetExtension(image);
+        return FS.GetExtension(image);
     }
 
     /// <summary>
