@@ -1,6 +1,3 @@
-using SunamoStringSplit;
-using SunamoStringSubstring;
-
 namespace SunamoUri;
 
 
@@ -17,10 +14,10 @@ public partial class QSHelper
     /// </summary>
     public static string GetParameter(string uri, string nameParam)
     {
-        var main = SHSplit.SplitMore(uri, new string[] { AllStringsSE.q, "&" });
+        var main = uri.Split(new string[] { AllStringsSE.q, "&" }, StringSplitOptions.RemoveEmptyEntries);
         foreach (string var in main)
         {
-            var v = SHSplit.Split(var, "=");
+            var v = var.Split(new String[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
             if (v[0] == nameParam)
             {
                 return v[1];
@@ -58,7 +55,7 @@ public partial class QSHelper
             dexPocatek = dexPocatek + nameParam.Length;
             if (dexKonec != -1)
             {
-                return SHSubstring.Substring(uri, dexPocatek, dexKonec, SubstringArgs.Instance);
+                return SHSubstring.Substring(uri, dexPocatek, dexKonec, null);
             }
 
             return uri.Substring(dexPocatek);
@@ -75,7 +72,8 @@ public partial class QSHelper
     /// <param name = "p"></param>
     public static string GetQS(string adresa, params string[] p2)
     {
-        var p = CA.TwoDimensionParamsIntoOne(p2);
+        //var p = CA.TwoDimensionParamsIntoOne(p2);
+        var p = p2.ToList();
 
         StringBuilder sb = new StringBuilder();
         sb.Append(adresa + AllStringsSE.q);
@@ -123,7 +121,7 @@ public partial class QSHelper
             }
 
             //args = args.Substring(1);
-            List<string> splited = new List<string>(SHSplit.SplitChar(args, '&'));
+            List<string> splited = new List<string>(args.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries));
             splited.Sort();
             args = string.Join('&', splited.ToArray());
         }
@@ -142,7 +140,7 @@ public partial class QSHelper
 
         qs = qs.TrimStart(AllCharsSE.q);
 
-        var parts = SHSplit.SplitMore(qs, new string[] { "&", "=" });
+        var parts = qs.Split(new string[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries).ToList();// SHSplit.SplitMore(qs, );
 
         return DictionaryHelper.GetDictionaryByKeyValueInString<string>(parts);
     }

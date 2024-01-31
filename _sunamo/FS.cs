@@ -1,10 +1,9 @@
-namespace SunamoUri._sunamo;
+//namespace SunamoUri._sunamo;
 
 
-internal class FS
-{
-    internal static Func<string, Char[], string> ReplaceInvalidFileNameChars;
-    internal static Func<string, string> TextWithoutDiacritic;
-    internal static Func<string, string> GetExtension;
+//public class FS
+//{
+//    public static Func<string, Char[], string> ReplaceInvalidFileNameChars;
+//    public static Func<string, string> GetExtension;
 
-}
+//}

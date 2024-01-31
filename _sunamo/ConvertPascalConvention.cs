@@ -1,7 +1,7 @@
-namespace SunamoUri._sunamo;
+//namespace SunamoUri._sunamo;
 
 
-internal class ConvertPascalConvention
-{
-    internal static Func<string, string> ToConvention;
-}
+//public class ConvertPascalConvention
+//{
+//    public static Func<string, string> ToConvention;
+//}

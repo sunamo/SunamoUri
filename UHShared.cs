@@ -1,6 +1,3 @@
-using SunamoDelegates;
-using SunamoStringTrim;
-
 namespace SunamoUri;
 
 
@@ -52,9 +49,9 @@ public partial class UH
     {
         if (String.IsNullOrEmpty(title)) return "";
 
-        title = SH.AddBeforeUpperChars(title, AllChars.dash, false);
+        title = SHSH.AddBeforeUpperChars(title, AllChars.dash, false);
 
-        title = SH.TextWithoutDiacritic(title);
+        title = title.RemoveDiacritics();
         // replace spaces with single dash
         title = Regex.Replace(title, @"\s+", AllStrings.dash);
         // if we end up with multiple dashes, collapse to single dash
@@ -82,15 +79,15 @@ public partial class UH
 
     public static void BeforeCombine(ref string hostApp)
     {
-        hostApp = SH.PrefixIfNotStartedWith(hostApp, Consts.https, false);
-        hostApp = SH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
+        hostApp = SHSH.PrefixIfNotStartedWith(hostApp, Consts.https, false);
+        hostApp = SHSH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
     }
 
     public static string GetUriSafeString(string title, int maxLenght)
     {
         if (String.IsNullOrEmpty(title)) return "";
 
-        title = SH.TextWithoutDiacritic(title);
+        title = title.RemoveDiacritics();
         // replace spaces with single dash
         title = Regex.Replace(title, @"\s+", AllStrings.dash);
         // if we end up with multiple dashes, collapse to single dash
@@ -126,7 +123,7 @@ public partial class UH
         {
             if (uri.Length + pripocist.ToString().Length >= maxLength)
             {
-                tagName = SH.RemoveLastChar(tagName);
+                tagName = SHSH.RemoveLastChar(tagName);
             }
             else
             {
@@ -198,11 +195,11 @@ public partial class UH
     {
         if (wholeUrl)
         {
-            var d = SH.RemoveAfterFirstChar(rp, AllChars.q);
-            var result = FS.ReplaceInvalidFileNameChars(d, EmptyArrays.Chars);
-            return result;
+            var d = SHParts.RemoveAfterFirst(rp, AllStrings.q);
+            //var result = FS.ReplaceInvalidFileNameChars(d, EmptyArrays.Chars);
+            return d;
         }
-        rp = SH.RemoveAfterFirstChar(rp, AllChars.q);
+        rp = SHParts.RemoveAfterFirst(rp, AllStrings.q);
         rp = rp.TrimEnd(AllChars.slash);
         int dex = rp.LastIndexOf(AllChars.slash);
         return rp.Substring(dex + 1);
@@ -217,7 +214,7 @@ public partial class UH
 
     public static string GetExtension(string image)
     {
-        return FS.GetExtension(image);
+        return Path.GetExtension(image);
     }
 
     /// <summary>

@@ -1,8 +1,8 @@
-namespace SunamoUri._sunamo;
+//namespace SunamoUri._sunamo;
 
 
-internal class CA
-{
-    internal static Func<Object[], List<object>> TwoDimensionParamsIntoOne;
+//public class CA
+//{
+//    public static Func<Object[], List<object>> TwoDimensionParamsIntoOne;
 
-}
+//}

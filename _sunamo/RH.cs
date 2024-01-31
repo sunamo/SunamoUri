@@ -1,7 +1,7 @@
-namespace SunamoUri._sunamo;
+//namespace SunamoUri._sunamo;
 
 
-internal class RH
-{
-    internal static Func<Type, GetMemberArgs, List<FieldInfo>> GetConsts;
-}
+//public class RH
+//{
+//    public static Func<Type, GetMemberArgs, List<FieldInfo>> GetConsts;
+//}

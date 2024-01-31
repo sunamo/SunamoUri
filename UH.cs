@@ -1,8 +1,3 @@
-using SunamoI18N;
-using SunamoStringSplit;
-using SunamoStringTrim;
-using SunamoValues.Values;
-
 namespace SunamoUri;
 
 
@@ -15,8 +10,8 @@ public partial class UH
         // Uri must be checked always before passed into method. Then I would make same checks again and again
         var uri = CreateUri(s);
         var result = SHReplace.ReplaceAll(uri.Host, AllStrings.space, new string[] { AllStrings.dot });
-        result = ConvertPascalConvention.ToConvention(result);
-        return SH.FirstCharUpper(result);
+        result = CaseConverter.CamelCase.ConvertCase(result);
+        return SHSH.FirstCharUpper(result);
     }
 
     private static string GetUriSafeString2(string title)
@@ -46,7 +41,7 @@ public partial class UH
 
     public static string InsertBetweenPathAndFile(string uri, string vlozit)
     {
-        var s = SHSplit.Split(uri, AllStrings.slash);
+        var s = uri.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList();
         s[s.Count - 2] += AllStrings.slash + vlozit;
         //Uri uri2 = new Uri(uri);
         string vr = null;
@@ -91,9 +86,9 @@ public partial class UH
 
     public static string RemoveTrackingPart(string v)
     {
-        var r = SH.RemoveAfterFirst(v, "#utm_");
+        var r = SHParts.RemoveAfterFirst(v, "#utm_");
         r = UH.RemovePrefixHttpOrHttps(r);
-        r = SH.RemoveAfterFirstChar(r, AllChars.slash);
+        r = SHParts.RemoveAfterFirstChar(r, AllChars.slash);
 
         if (r.Contains(AllStrings.dot))
         {
@@ -150,7 +145,7 @@ public partial class UH
             rp = rp.TrimEnd(AllChars.slash);
         }
 
-        rp = SH.RemoveAfterFirstChar(rp, AllChars.q);
+        rp = SHParts.RemoveAfterFirstChar(rp, AllChars.q);
 
         int dex = rp.LastIndexOf(AllChars.slash);
         if (dex != -1)
@@ -210,7 +205,7 @@ public partial class UH
             }
             else
             {
-                if (i == p.Count && FS.GetExtension(item) != "")
+                if (i == p.Count && Path.GetExtension(item) != "")
                 {
                     vr.Append(item);
                 }
@@ -273,13 +268,14 @@ public partial class UH
     public static string DebugLocalhost(string v)
     {
         v = v.ToLower();
-        v = SH.FirstCharUpper(v);
+        v = SHSH.FirstCharUpper(v);
 
         if (v != sess.i18n(XlfKeys.Nope))
         {
             List<FieldInfo> co = null;
 
-            co = RH.GetConsts(typeof(UriShortConsts), null);
+            co = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
             var co2 = co.Where(d => d.Name.StartsWith(v)).First();
             var vr = Consts.https + co2.GetValue(null).ToString() + "/";
             return vr;
@@ -308,7 +304,7 @@ public partial class UH
     {
         uri = UH.RemovePrefixHttpOrHttps(uri);
 
-        uri = SH.KeepAfterFirst(uri, AllStrings.slash, false);
+        uri = SHParts.KeepAfterFirst(uri, AllStrings.slash, false);
 
         return uri;
     }
@@ -316,7 +312,7 @@ public partial class UH
     public static string SanitizeKeepOnlyHost(string s)
     {
         s = UH.RemoveProtocol(s);
-        s = SH.RemoveAfterFirstChar(s, AllChars.slash);
+        s = SHParts.RemoveAfterFirstChar(s, AllChars.slash);
         s = s.Replace("www.", "");
         s = s.TrimEnd(AllChars.slash);
 
@@ -325,8 +321,8 @@ public partial class UH
 
     private static string RemoveProtocol(string s)
     {
-        s = SHReplace.ReplaceOnce(s, Consts.http, Consts.se);
-        s = SHReplace.ReplaceOnce(s, Consts.https, Consts.se);
+        s = SunamoStringShared.SHSH.ReplaceOnce(s, Consts.http, Consts.se);
+        s = SunamoStringShared.SHSH.ReplaceOnce(s, Consts.https, Consts.se);
 
         return s;
     }
@@ -338,7 +334,7 @@ public partial class UH
     /// <returns></returns>
     public static string KeepOnlyHostAndProtocol(string v)
     {
-        var p = SHSplit.Split(v, Consts.lc);
+        var p = v.Split(new String[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(v, );
 
         // se to tu už může dostat bez protokolu
         //if (p.Count != 2)
@@ -352,14 +348,14 @@ public partial class UH
             dx = 1;
         }
 
-        p[dx] = SH.RemoveAfterFirstChar(p[dx], AllChars.slash);
+        p[dx] = SHParts.RemoveAfterFirstChar(p[dx], AllChars.slash);
 
         return SHTrim.TrimStart(string.Join(Consts.lc, p).TrimEnd(AllChars.slash), "www.");
     }
 
     public static string GetToken(string href, int v)
     {
-        var tokens = SHSplit.Split(href, AllStrings.slash);
+        var tokens = href.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(href, AllStrings.slash);
 
         return tokens[tokens.Count + v];
     }

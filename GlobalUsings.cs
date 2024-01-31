@@ -11,7 +11,6 @@ global using System.Collections.Specialized;
 global using System.IO;
 global using SunamoArgs;
 global using System.Net;
-global using SunamoUri._sunamo;
 global using SunamoDictionary;
 global using SunamoStringReplace;
 global using SunamoI18N.Values;
