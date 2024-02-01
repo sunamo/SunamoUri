@@ -1,9 +1,37 @@
+
 namespace SunamoUri;
+using SunamoUri._sunamo;
+using SHSH = SunamoUri._sunamo.SHSH;
+
 
 
 
 public partial class UH
 {
+
+
+
+    public static string RemoveLastChar(string artist)
+    {
+        return artist.Substring(0, artist.Length - 1);
+    }
+    public static string WhiteSpaceFromStart(string v)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (var item in v)
+        {
+            if (char.IsWhiteSpace(item))
+            {
+                sb.Append(item);
+            }
+            else
+            {
+                break;
+            }
+        }
+        return sb.ToString();
+    }
+
     public static string RemoveHostAndProtocol(Uri uri)
     {
         string p = RemovePrefixHttpOrHttps(uri.ToString());
@@ -123,7 +151,7 @@ public partial class UH
         {
             if (uri.Length + pripocist.ToString().Length >= maxLength)
             {
-                tagName = SHSH.RemoveLastChar(tagName);
+                tagName = tagName.Substring(0, tagName.Length - 1); //SHSH.RemoveLastChar(tagName);
             }
             else
             {

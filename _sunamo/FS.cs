@@ -1,9 +1,11 @@
+namespace SunamoUri._sunamo;
+
 //namespace SunamoUri._sunamo;
 
 
-//public class FS
+//internal class FS
 //{
-//    public static Func<string, Char[], string> ReplaceInvalidFileNameChars;
-//    public static Func<string, string> GetExtension;
+//    internal static Func<string, Char[], string> ReplaceInvalidFileNameChars;
+//    internal static Func<string, string> GetExtension;
 
 //}

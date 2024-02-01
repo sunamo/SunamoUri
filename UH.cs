@@ -1,4 +1,8 @@
+
 namespace SunamoUri;
+using Case.NET;
+using SunamoStringParts;
+
 
 
 public partial class UH
@@ -11,7 +15,11 @@ public partial class UH
         var uri = CreateUri(s);
         var result = SHReplace.ReplaceAll(uri.Host, AllStrings.space, new string[] { AllStrings.dot });
         result = CaseConverter.CamelCase.ConvertCase(result);
-        return SHSH.FirstCharUpper(result);
+
+        StringBuilder sb = new StringBuilder(result);
+        sb[0] = char.ToUpper(sb[0]);
+        return sb.ToString();
+
     }
 
     private static string GetUriSafeString2(string title)
@@ -268,7 +276,9 @@ public partial class UH
     public static string DebugLocalhost(string v)
     {
         v = v.ToLower();
-        v = SHSH.FirstCharUpper(v);
+        StringBuilder sb = new StringBuilder(v);
+        sb[0] = char.ToUpper(sb[0]);
+        v = sb.ToString();
 
         if (v != sess.i18n(XlfKeys.Nope))
         {
@@ -339,7 +349,7 @@ public partial class UH
         // se to tu už může dostat bez protokolu
         //if (p.Count != 2)
         //{
-        //    ThrowEx.Custom("Wrong count of parts");
+        //    throw new Exception("Wrong count of parts");
         //}
 
         var dx = 0;
