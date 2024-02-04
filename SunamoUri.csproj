@@ -14,6 +14,7 @@
     <PackageReference Include="SunamoStringParts" Version="24.2.1.1" />
     <PackageReference Include="SunamoStringReplace" Version="24.2.1.1" />
     <PackageReference Include="SunamoStringShared" Version="24.2.1.1" />
+    <PackageReference Include="SunamoStringSubstring" Version="24.2.1.2" />
     <PackageReference Include="SunamoStringTrim" Version="24.2.1.1" />
     <PackageReference Include="SunamoDictionary" Version="24.2.1.2" />
   </ItemGroup>
