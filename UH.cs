@@ -1,9 +1,8 @@
 
 namespace SunamoUri;
 using Case.NET;
-using SunamoStringParts;
-
-
+using SunamoUri._sunamo;
+using SunamoXlfKeys;
 
 public partial class UH
 {
@@ -331,8 +330,8 @@ public partial class UH
 
     private static string RemoveProtocol(string s)
     {
-        s = SunamoStringShared.SHSH.ReplaceOnce(s, Consts.http, Consts.se);
-        s = SunamoStringShared.SHSH.ReplaceOnce(s, Consts.https, Consts.se);
+        s = SH.ReplaceOnce(s, Consts.http, Consts.se);
+        s = SH.ReplaceOnce(s, Consts.https, Consts.se);
 
         return s;
     }

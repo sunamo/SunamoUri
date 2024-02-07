@@ -2,8 +2,12 @@ namespace SunamoUri._sunamo;
 
 //namespace SunamoUri._sunamo;
 
-internal class SHSH
+internal class SH
 {
+    internal static string ReplaceOnce(string input, string what, string zaco)
+    {
+        return new Regex(what).Replace(input, zaco, 1);
+    }
     internal static string AddBeforeUpperChars(string text, char add, bool preserveAcronyms)
     {
         if (string.IsNullOrWhiteSpace(text))

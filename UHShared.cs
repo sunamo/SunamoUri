@@ -1,7 +1,7 @@
 
 namespace SunamoUri;
 using SunamoUri._sunamo;
-using SHSH = SunamoUri._sunamo.SHSH;
+using SH = SunamoUri._sunamo.SH;
 
 
 
@@ -77,7 +77,7 @@ public partial class UH
     {
         if (String.IsNullOrEmpty(title)) return "";
 
-        title = SHSH.AddBeforeUpperChars(title, AllChars.dash, false);
+        title = SH.AddBeforeUpperChars(title, AllChars.dash, false);
 
         title = title.RemoveDiacritics();
         // replace spaces with single dash
@@ -107,8 +107,8 @@ public partial class UH
 
     public static void BeforeCombine(ref string hostApp)
     {
-        hostApp = SHSH.PrefixIfNotStartedWith(hostApp, Consts.https, false);
-        hostApp = SHSH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
+        hostApp = SH.PrefixIfNotStartedWith(hostApp, Consts.https, false);
+        hostApp = SH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
     }
 
     public static string GetUriSafeString(string title, int maxLenght)

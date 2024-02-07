@@ -1,4 +1,4 @@
-using SunamoStringSubstring;
+using SunamoUri._sunamo;
 
 namespace SunamoUri;
 

@@ -3,20 +3,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>24.2.1.2</Version>
+    <Version>24.2.6.2</Version>
     <Description>For working with URL (Uniform Resource Locator / Identifier)</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CaseDotNet" Version="0.3.36" />
     <PackageReference Include="Diacritics" Version="3.3.27" />
-    <PackageReference Include="SunamoBts" Version="24.2.1.1" />
-    <PackageReference Include="SunamoI18N" Version="24.1.23.1" />
-    <PackageReference Include="SunamoStringParts" Version="24.2.1.1" />
-    <PackageReference Include="SunamoStringReplace" Version="24.2.1.1" />
-    <PackageReference Include="SunamoStringShared" Version="24.2.1.1" />
-    <PackageReference Include="SunamoStringSubstring" Version="24.2.1.2" />
-    <PackageReference Include="SunamoStringTrim" Version="24.2.1.1" />
-    <PackageReference Include="SunamoDictionary" Version="24.2.1.2" />
+    <PackageReference Include="SunamoArgs" Version="24.2.6.4" />
+    <PackageReference Include="SunamoExceptions" Version="24.2.6.3" />
+    <PackageReference Include="SunamoValues" Version="24.2.6.3" />
+    <PackageReference Include="SunamoXlfKeys" Version="24.2.6.2" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
