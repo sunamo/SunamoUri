@@ -9,9 +9,6 @@
   <ItemGroup>
     <PackageReference Include="CaseDotNet" Version="0.3.36" />
     <PackageReference Include="Diacritics" Version="3.3.27" />
-    <PackageReference Include="SunamoArgs" Version="24.2.6.4" />
-    <PackageReference Include="SunamoExceptions" Version="24.2.6.3" />
-    <PackageReference Include="SunamoValues" Version="24.2.6.3" />
     <PackageReference Include="SunamoXlfKeys" Version="24.2.6.2" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
