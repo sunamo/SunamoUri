@@ -13,3 +13,6 @@ global using System.Collections.Specialized;
 global using SunamoDelegates;
 global using System.Net;
 global using Diacritics.Extensions;
+global using System.Collections.Generic;
+global using System.Collections;
+

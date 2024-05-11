@@ -140,7 +140,7 @@ public partial class QSHelper
     {
         Dictionary<string, string> d = new Dictionary<string, string>();
 
-        qs = qs.TrimStart(AllCharsSE.q);
+        qs = qs.TrimStart(AllChars.q);
 
         var parts = qs.Split(new string[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries).ToList();// SHSplit.SplitMore(qs, );
 
