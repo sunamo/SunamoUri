@@ -1,4 +1,4 @@
-﻿namespace SunamoUri._sunamo;
+namespace SunamoUri;
 internal class SHReplace
 {
     internal static string ReplaceAll(string vstup, string zaCo, params string[] co)

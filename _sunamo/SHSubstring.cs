@@ -1,6 +1,6 @@
 
 
-namespace SunamoUri._sunamo;
+namespace SunamoUri;
 internal class SHSubstring
 {
     internal static string Substring(string sql, int indexFrom, int indexTo, SubstringArgs a = null)

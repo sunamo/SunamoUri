@@ -1,4 +1,4 @@
-﻿namespace SunamoUri._sunamo;
+namespace SunamoUri;
 internal class DictionaryHelper
 {
     internal static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> p)

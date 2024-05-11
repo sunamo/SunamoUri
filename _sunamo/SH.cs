@@ -1,4 +1,4 @@
-namespace SunamoUri._sunamo;
+namespace SunamoUri;
 
 //namespace SunamoUri._sunamo;
 
