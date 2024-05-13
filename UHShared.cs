@@ -1,6 +1,6 @@
 
 namespace SunamoUri;
-using SunamoUri._sunamo;
+
 using SH = SunamoUri._sunamo.SH;
 
 
