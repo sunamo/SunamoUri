@@ -24,6 +24,12 @@
     <Compile Include="..\SunamoExceptions\OnlyInSE\Exc.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exc.cs" />
     <Compile Include="..\SunamoExceptions\OnlyInSE\Types.cs" Link="_linked\SunamoExceptions\OnlyInSE\Types.cs" />
     <Compile Include="..\SunamoXlfKeys\XlfKeys.cs" Link="_linked\SunamoXlfKeys\XlfKeys.cs" />
+    <Compile Include="..\SunamoStringSubstring\SHSubstring.cs" Link="_linked\SunamoStringSubstring\SHSubstring.cs" />
+    <Compile Include="..\SunamoDictionary\DictionaryHelper.cs" Link="_linked\SunamoDictionary\DictionaryHelper.cs" />
+    <Compile Include="..\SunamoStringReplace\SHReplace.cs" Link="_linked\SunamoStringReplace\SHReplace.cs" />
+    <Compile Include="..\SunamoStringParts\SHParts.cs" Link="_linked\SunamoStringParts\SHParts.cs" />
+    <Compile Include="..\SunamoString\SH.cs" Link="_linked\SunamoString\SH.cs" />
+    <Compile Include="..\SunamoStringTrim\SHTrim.cs" Link="_linked\SunamoStringTrim\SHTrim.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoUri</DefineConstants>
