@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="CaseDotNet" Version="0.3.36" />
     <PackageReference Include="Diacritics" Version="3.3.27" />
-    <PackageReference Include="SunamoXlfKeys" Version="24.2.6.2" />
     <Compile Include="..\SunamoValues\AllStrings.cs" Link="_linked\SunamoValues\AllStrings.cs" />
     <Compile Include="..\SunamoValues\AllChars.cs" Link="_linked\SunamoValues\AllChars.cs" />
     <Compile Include="..\SunamoValues\Consts.cs" Link="_linked\SunamoValues\Consts.cs" />
