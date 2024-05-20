@@ -18,6 +18,13 @@
     <Compile Include="..\SunamoValues\AllChars.cs" Link="_linked\SunamoValues\AllChars.cs" />
     <Compile Include="..\SunamoValues\AllStrings.cs" Link="_linked\SunamoValues\AllStrings.cs" />
     <Compile Include="..\SunamoValues\Consts.cs" Link="_linked\SunamoValues\Consts.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\ThrowEx.cs" Link="_linked\SunamoExceptions\OnlyInSE\ThrowEx.cs" />
+    <Compile Include="..\SunamoArgs\SubstringArgs.cs" Link="_linked\SunamoArgs\SubstringArgs.cs" />
+    <Compile Include="..\SunamoDelegates\BoolString.cs" Link="_linked\SunamoDelegates\BoolString.cs" />
+    <Compile Include="..\SunamoXlfKeys\XlfKeys.cs" Link="_linked\SunamoXlfKeys\XlfKeys.cs" />
+    <Compile Include="..\SunamoValues\Values\UriShortConsts.cs" Link="_linked\SunamoValues\Values\UriShortConsts.cs" />
+    <Compile Include="..\SunamoCollectionsGeneric\CAGConsts.cs" Link="_linked\SunamoCollectionsGeneric\CAGConsts.cs" />
+    <Compile Include="..\SunamoData\Data\AzureBuildUriArgs.cs" Link="_linked\SunamoData\Data\AzureBuildUriArgs.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoUri</DefineConstants>

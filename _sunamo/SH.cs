@@ -1,6 +1,6 @@
 namespace SunamoUri;
 
-//namespace SunamoUri._sunamo;
+//namespace SunamoUri;
 
 internal class SH
 {
