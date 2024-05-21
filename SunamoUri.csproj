@@ -3,28 +3,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>24.2.6.2</Version>
+    <Version>24.5.21.1</Version>
     <Description>For working with URL (Uniform Resource Locator / Identifier)</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CaseDotNet" Version="0.3.36" />
     <PackageReference Include="Diacritics" Version="3.3.27" />
-    <Compile Include="..\SunamoExceptions\OnlyInSE\Exc.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exc.cs" />
-    <Compile Include="..\SunamoExceptions\OnlyInSE\Exceptions.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exceptions.cs" />
-    <Compile Include="..\SunamoExceptions\OnlyInSE\TranslateAble.cs" Link="_linked\SunamoExceptions\OnlyInSE\TranslateAble.cs" />
-    <Compile Include="..\SunamoExceptions\_AddedToAllCsproj\CASunamoExceptions.cs" Link="_linked\SunamoExceptions\_AddedToAllCsproj\CASunamoExceptions.cs" />
-    <Compile Include="..\SunamoExceptions\_AddedToAllCsproj\FSSunamoExceptions.cs" Link="_linked\SunamoExceptions\_AddedToAllCsproj\FSSunamoExceptions.cs" />
-    <Compile Include="..\SunamoExceptions\_AddedToAllCsproj\SHSunamoExceptions.cs" Link="_linked\SunamoExceptions\_AddedToAllCsproj\SHSunamoExceptions.cs" />
-    <Compile Include="..\SunamoValues\AllChars.cs" Link="_linked\SunamoValues\AllChars.cs" />
-    <Compile Include="..\SunamoValues\AllStrings.cs" Link="_linked\SunamoValues\AllStrings.cs" />
-    <Compile Include="..\SunamoValues\Consts.cs" Link="_linked\SunamoValues\Consts.cs" />
-    <Compile Include="..\SunamoExceptions\OnlyInSE\ThrowEx.cs" Link="_linked\SunamoExceptions\OnlyInSE\ThrowEx.cs" />
-    <Compile Include="..\SunamoArgs\SubstringArgs.cs" Link="_linked\SunamoArgs\SubstringArgs.cs" />
-    <Compile Include="..\SunamoDelegates\BoolString.cs" Link="_linked\SunamoDelegates\BoolString.cs" />
-    <Compile Include="..\SunamoXlfKeys\XlfKeys.cs" Link="_linked\SunamoXlfKeys\XlfKeys.cs" />
-    <Compile Include="..\SunamoValues\Values\UriShortConsts.cs" Link="_linked\SunamoValues\Values\UriShortConsts.cs" />
-    <Compile Include="..\SunamoCollectionsGeneric\CAGConsts.cs" Link="_linked\SunamoCollectionsGeneric\CAGConsts.cs" />
-    <Compile Include="..\SunamoData\Data\AzureBuildUriArgs.cs" Link="_linked\SunamoData\Data\AzureBuildUriArgs.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoUri</DefineConstants>
