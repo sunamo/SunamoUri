@@ -1,4 +1,4 @@
 namespace SunamoUri;
 
 
-internal delegate bool BoolString(string s);
+public delegate bool BoolString(string s);

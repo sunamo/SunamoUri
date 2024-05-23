@@ -1,7 +1,7 @@
 namespace SunamoUri;
-internal class sess
+public class sess
 {
-    internal static string i18n(string nope)
+    public static string i18n(string nope)
     {
         return nope;
     }

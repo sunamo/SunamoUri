@@ -1,9 +1,9 @@
 
 
 namespace SunamoUri;
-internal class SHSubstring
+public class SHSubstring
 {
-    internal static string Substring(string sql, int indexFrom, int indexTo, SubstringArgs a = null)
+    public static string Substring(string sql, int indexFrom, int indexTo, SubstringArgs a = null)
     {
         if (a == null)
         {
