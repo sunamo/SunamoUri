@@ -1,3 +1,5 @@
+
+namespace SunamoUri;
 public class TranslateAble
 {
     

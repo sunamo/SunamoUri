@@ -1,3 +1,5 @@
+
+namespace SunamoUri;
 internal class SHSunamoExceptions
 {
     public static string JoinNL(List<string> l)
