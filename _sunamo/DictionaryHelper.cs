@@ -1,7 +1,7 @@
 namespace SunamoUri;
-public class DictionaryHelper
+internal class DictionaryHelper
 {
-    public static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> p)
+    internal static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> p)
     {
         var methodName = Exc.CallingMethod();
         ThrowEx.IsOdd("p", p);

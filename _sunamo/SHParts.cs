@@ -1,13 +1,13 @@
 namespace SunamoUri;
 
-public class SHParts
+internal class SHParts
 {
-    public static string RemoveAfterFirstChar(string name, char dot)
+    internal static string RemoveAfterFirstChar(string name, char dot)
     {
         return RemoveAfterFirst(name, dot.ToString());
     }
 
-    public static string TrimStart(string v, string s)
+    internal static string TrimStart(string v, string s)
     {
         while (v.StartsWith(s))
         {
@@ -17,7 +17,7 @@ public class SHParts
         return v;
     }
 
-    public static string KeepAfterFirst(string searchQuery, string after, bool keepDeli = false)
+    internal static string KeepAfterFirst(string searchQuery, string after, bool keepDeli = false)
     {
         var dx = searchQuery.IndexOf(after);
         if (dx != -1)
@@ -30,7 +30,7 @@ public class SHParts
         }
         return searchQuery;
     }
-    public static string RemoveAfterFirst(string t, string ch)
+    internal static string RemoveAfterFirst(string t, string ch)
     {
         int dex = t.IndexOf(ch);
         if (dex == -1 || dex == t.Length - 1)
