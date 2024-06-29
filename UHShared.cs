@@ -143,7 +143,7 @@ public partial class UH
         return title;
     }
 
-    public static string GetUriSafeString(string tagName, int maxLength, BoolString methodInWebExists)
+    public static string GetUriSafeString(string tagName, int maxLength, Func<string, bool> methodInWebExists)
     {
         string uri = UH.GetUriSafeString(tagName, maxLength);
         int pripocist = 1;
