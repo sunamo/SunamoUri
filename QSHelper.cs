@@ -8,7 +8,7 @@ namespace SunamoUri;
 /// <summary>
 /// Summary description for QSHelper
 /// </summary>
-public partial class QSHelper
+public class QSHelper
 {
     /// <summary>
     /// GetParameter = return null when not found
