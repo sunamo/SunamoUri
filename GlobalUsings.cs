@@ -28,3 +28,6 @@ global using SunamoUri._sunamo.SunamoExceptions.OnlyInSE;
 global using SunamoUri._sunamo.SunamoExceptions._AddedToAllCsproj;
 global using SunamoUri._sunamo.SunamoLang.SunamoI18N;
 global using SunamoUri._sunamo.SunamoValues.Values;
+global using Case.NET;
+global using System.Diagnostics;
+global using System.Threading.Tasks;

@@ -1,5 +1,3 @@
-
-
 namespace SunamoUri._sunamo.SunamoStringSubstring;
 internal class SHSubstring
 {
