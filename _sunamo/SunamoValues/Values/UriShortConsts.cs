@@ -1,4 +1,4 @@
-namespace SunamoUri;
+namespace SunamoUri._sunamo.SunamoValues.Values;
 
 
 internal class UriShortConsts

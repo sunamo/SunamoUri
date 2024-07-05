@@ -1,4 +1,4 @@
-namespace SunamoUri;
+namespace SunamoUri._sunamo.SunamoCollectionsGeneric;
 
 
 internal class CAGConsts

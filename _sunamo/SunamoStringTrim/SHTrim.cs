@@ -1,4 +1,4 @@
-namespace SunamoUri;
+namespace SunamoUri._sunamo.SunamoStringTrim;
 internal class SHTrim
 {
     internal static string TrimEnd(string name, string ext)

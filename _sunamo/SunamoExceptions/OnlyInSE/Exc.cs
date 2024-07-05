@@ -1,5 +1,5 @@
 
-namespace SunamoUri;
+namespace SunamoUri._sunamo.SunamoExceptions.OnlyInSE;
 using System.Diagnostics;
 using System.Text;
 
