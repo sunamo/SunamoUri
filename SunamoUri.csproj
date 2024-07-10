@@ -11,18 +11,20 @@
     <RepositoryUrl>https://github.com/sunamo/SunamoUri.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CaseDotNet" Version="0.3.36" />
     <PackageReference Include="Diacritics" Version="3.3.27" />
+    <None Include="readme.md" Pack="True" PackagePath="." />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_sunamo\SunamoData\Data\" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);ASYNC;SunamoUri</DefineConstants>
+    <DefineConstants>$(DefineConstants);ASYNC;SunamoUri;SunamoUri.csproj</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);ASYNC;SunamoUri</DefineConstants>
+    <DefineConstants>$(DefineConstants);ASYNC;SunamoUri;SunamoUri.csproj</DefineConstants>
   </PropertyGroup>
 </Project>
