@@ -678,7 +678,7 @@ public class UH
     /// <returns></returns>
     public static string KeepOnlyHostAndProtocol(string v)
     {
-        var p = v.Split(new String[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(v, );
+        var p = v.Split(new String[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
 
         // se to tu už může dostat bez protokolu
         //if (p.Count != 2)
@@ -699,7 +699,7 @@ public class UH
 
     public static string GetToken(string href, int v)
     {
-        var tokens = href.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(href, AllStrings.slash);
+        var tokens = href.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(href, AllStrings.slash);
 
         return tokens[tokens.Count + v];
     }
