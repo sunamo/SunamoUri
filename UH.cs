@@ -142,7 +142,7 @@ public class UH
         {
             if (uri.Length + pripocist.ToString().Length >= maxLength)
             {
-                tagName = tagName.Substring(0, tagName.Length - 1); //SHSH.RemoveLastChar(tagName);
+                tagName = tagName.Substring(0, tagName.Length - 1); //SH.RemoveLastChar(tagName);
             }
             else
             {

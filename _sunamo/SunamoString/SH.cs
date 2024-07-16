@@ -1,7 +1,5 @@
 namespace SunamoUri._sunamo.SunamoString;
 
-//namespace SunamoUri;
-
 internal class SH
 {
     internal static string ReplaceOnce(string input, string what, string zaco)

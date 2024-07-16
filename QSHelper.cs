@@ -1,8 +1,5 @@
 namespace SunamoUri;
 
-
-
-
 /// <summary>
 /// Summary description for QSHelper
 /// </summary>
