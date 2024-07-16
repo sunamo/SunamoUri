@@ -1,4 +1,4 @@
-namespace SunamoUri._sunamo.SunamoString;
+//namespace SunamoUri._sunamo.SunamoString;
 
 internal class SH
 {
@@ -16,8 +16,8 @@ internal class SH
         {
             if (char.IsUpper(text[i]))
                 if ((text[i - 1] != add && !char.IsUpper(text[i - 1])) ||
-                (preserveAcronyms && char.IsUpper(text[i - 1]) &&
-                i < text.Length - 1 && !char.IsUpper(text[i + 1])))
+                    (preserveAcronyms && char.IsUpper(text[i - 1]) &&
+                     i < text.Length - 1 && !char.IsUpper(text[i + 1])))
                     newText.Append(add);
             newText.Append(text[i]);
         }
@@ -87,4 +87,34 @@ internal class SH
     //    internal static Func<string, string, bool, string> PrefixIfNotStartedWith;
     //    internal static Func<string, string, string> TrimStart;
     //    internal static Func<string, string> RemoveLastChar;
+    internal static string JoinNL(List<string> l)
+    {
+        StringBuilder sb = new();
+        foreach (var item in l) sb.AppendLine(item);
+        var r = string.Empty;
+        r = sb.ToString();
+        return r;
+    }
+    internal static List<string> SplitCharMore(string s, params char[] dot)
+    {
+        return s.Split(dot, StringSplitOptions.RemoveEmptyEntries).ToList();
+    }
+    internal static List<string> SplitMore(string s, params string[] dot)
+    {
+        return s.Split(dot, StringSplitOptions.RemoveEmptyEntries).ToList();
+    }
+    internal static List<string> SplitNone(string text, params string[] deli)
+    {
+        return text.Split(deli, StringSplitOptions.None).ToList();
+    }
+    internal static string NullToStringOrDefault(object n)
+    {
+        
+        return n == null ? " " + Consts.nulled : AllStrings.space + n;
+    }
+    internal static string TrimEnd(string name, string ext)
+    {
+        while (name.EndsWith(ext)) return name.Substring(0, name.Length - ext.Length);
+        return name;
+    }
 }
