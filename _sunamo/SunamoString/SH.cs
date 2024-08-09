@@ -6,13 +6,14 @@ internal class SH
     {
         return new Regex(what).Replace(input, zaco, 1);
     }
+
     internal static string AddBeforeUpperChars(string text, char add, bool preserveAcronyms)
     {
         if (string.IsNullOrWhiteSpace(text))
             return string.Empty;
-        StringBuilder newText = new StringBuilder(text.Length * 2);
+        var newText = new StringBuilder(text.Length * 2);
         newText.Append(text[0]);
-        for (int i = 1; i < text.Length; i++)
+        for (var i = 1; i < text.Length; i++)
         {
             if (char.IsUpper(text[i]))
                 if ((text[i - 1] != add && !char.IsUpper(text[i - 1])) ||
@@ -21,29 +22,24 @@ internal class SH
                     newText.Append(add);
             newText.Append(text[i]);
         }
+
         return newText.ToString();
     }
 
     internal static string WhiteSpaceFromStart(string v)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         foreach (var item in v)
-        {
             if (char.IsWhiteSpace(item))
-            {
                 sb.Append(item);
-            }
             else
-            {
                 break;
-            }
-        }
         return sb.ToString();
     }
 
     internal static string PrefixIfNotStartedWith(string item, string http, bool skipWhitespaces = false)
     {
-        string whitespaces = string.Empty;
+        var whitespaces = string.Empty;
 
         if (skipWhitespaces)
         {
@@ -51,22 +47,16 @@ internal class SH
             item = item.Substring(whitespaces.Length);
         }
 
-        if (!item.StartsWith(http))
-        {
-            return whitespaces + http + item;
-        }
+        if (!item.StartsWith(http)) return whitespaces + http + item;
 
         return whitespaces + item;
     }
+
     internal static string PostfixIfNotEmpty(string text, string postfix)
     {
         if (text.Length != 0)
-        {
             if (!text.EndsWith(postfix))
-            {
                 return text + postfix;
-            }
-        }
         return text;
     }
 
@@ -95,23 +85,27 @@ internal class SH
         r = sb.ToString();
         return r;
     }
+
     internal static List<string> SplitCharMore(string s, params char[] dot)
     {
         return s.Split(dot, StringSplitOptions.RemoveEmptyEntries).ToList();
     }
+
     internal static List<string> SplitMore(string s, params string[] dot)
     {
         return s.Split(dot, StringSplitOptions.RemoveEmptyEntries).ToList();
     }
+
     internal static List<string> SplitNone(string text, params string[] deli)
     {
         return text.Split(deli, StringSplitOptions.None).ToList();
     }
+
     internal static string NullToStringOrDefault(object n)
     {
-        
         return n == null ? " " + Consts.nulled : AllStrings.space + n;
     }
+
     internal static string TrimEnd(string name, string ext)
     {
         while (name.EndsWith(ext)) return name.Substring(0, name.Length - ext.Length);

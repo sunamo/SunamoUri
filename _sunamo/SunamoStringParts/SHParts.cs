@@ -9,10 +9,7 @@ internal class SHParts
 
     internal static string TrimStart(string v, string s)
     {
-        while (v.StartsWith(s))
-        {
-            v = v.Substring(s.Length);
-        }
+        while (v.StartsWith(s)) v = v.Substring(s.Length);
 
         return v;
     }
@@ -23,22 +20,18 @@ internal class SHParts
         if (dx != -1)
         {
             searchQuery = TrimStart(searchQuery.Substring(dx), after);
-            if (keepDeli)
-            {
-                searchQuery = after + searchQuery;
-            }
-        }
-        return searchQuery;
-    }
-    internal static string RemoveAfterFirst(string t, string ch)
-    {
-        int dex = t.IndexOf(ch);
-        if (dex == -1 || dex == t.Length - 1)
-        {
-            return t;
+            if (keepDeli) searchQuery = after + searchQuery;
         }
 
-        string vr = t.Remove(dex);
+        return searchQuery;
+    }
+
+    internal static string RemoveAfterFirst(string t, string ch)
+    {
+        var dex = t.IndexOf(ch);
+        if (dex == -1 || dex == t.Length - 1) return t;
+
+        var vr = t.Remove(dex);
         return vr;
     }
 }

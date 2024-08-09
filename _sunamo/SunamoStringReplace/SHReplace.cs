@@ -1,4 +1,5 @@
 namespace SunamoUri._sunamo.SunamoStringReplace;
+
 internal class SHReplace
 {
     internal static string ReplaceAll(string vstup, string zaCo, params string[] co)
@@ -11,17 +12,10 @@ internal class SHReplace
         //}
 
         foreach (var item in co)
-        {
             if (string.IsNullOrEmpty(item))
-            {
                 return vstup;
-            }
-        }
 
-        foreach (var item in co)
-        {
-            vstup = vstup.Replace(item, zaCo);
-        }
+        foreach (var item in co) vstup = vstup.Replace(item, zaCo);
         return vstup;
     }
 }

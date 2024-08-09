@@ -1,3 +1,5 @@
+using SunamoUri._sunamo;
+
 namespace SunamoUri;
 
 public class UH
@@ -6,67 +8,158 @@ public class UH
     {
         return artist.Substring(0, artist.Length - 1);
     }
+
     public static string WhiteSpaceFromStart(string v)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         foreach (var item in v)
-        {
             if (char.IsWhiteSpace(item))
-            {
                 sb.Append(item);
-            }
             else
-            {
                 break;
-            }
-        }
         return sb.ToString();
     }
 
     public static string RemoveHostAndProtocol(Uri uri)
     {
-        string p = RemovePrefixHttpOrHttps(uri.ToString());
-        int dex = p.IndexOf(AllChars.slash);
+        var p = RemovePrefixHttpOrHttps(uri.ToString());
+        var dex = p.IndexOf(AllChars.slash);
         return p.Substring(dex);
     }
 
     #region Remove*
+
     public static string RemovePrefixHttpOrHttps(string t)
     {
         t = t.Replace("http://", "");
         t = t.Replace("https://", "");
         return t;
     }
+
     #endregion
+
+    /// <summary>
+    ///     first upper, other lower
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static string DebugLocalhost(string v)
+    {
+        v = v.ToLower();
+        var sb = new StringBuilder(v);
+        sb[0] = char.ToUpper(sb[0]);
+        v = sb.ToString();
+
+        if (v != sess.i18n(XlfKeys.Nope))
+        {
+            List<FieldInfo> co = null;
+
+            co = typeof(UriShortConsts)
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
+            var co2 = co.Where(d => d.Name.StartsWith(v)).First();
+            var vr = Consts.https + co2.GetValue(null) + "/";
+            return vr;
+        }
+#if !DEBUG
+        return Consts.HttpSunamoCzSlash;
+#endif
+        return Consts.HttpLocalhostSlash;
+    }
+
+    public static bool IsWellFormedUriString(ref string uri, UriKind absolute)
+    {
+        uri = uri.Trim();
+        uri = uri.TrimEnd(AllChars.colon);
+
+        var v = Uri.IsWellFormedUriString(uri, absolute);
+        if (v) uri = AppendHttpIfNotExists(uri);
+        return v;
+    }
+
+    public static string GetPathname(string uri)
+    {
+        uri = RemovePrefixHttpOrHttps(uri);
+
+        uri = SHParts.KeepAfterFirst(uri, AllStrings.slash);
+
+        return uri;
+    }
+
+    public static string SanitizeKeepOnlyHost(string s)
+    {
+        s = RemoveProtocol(s);
+        s = SHParts.RemoveAfterFirstChar(s, AllChars.slash);
+        s = s.Replace("www.", "");
+        s = s.TrimEnd(AllChars.slash);
+
+        return s;
+    }
+
+    private static string RemoveProtocol(string s)
+    {
+        s = SH.ReplaceOnce(s, Consts.http, Consts.se);
+        s = SH.ReplaceOnce(s, Consts.https, Consts.se);
+
+        return s;
+    }
+
+    /// <summary>
+    ///     Remove also last slash and www.
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static string KeepOnlyHostAndProtocol(string v)
+    {
+        var p = v.Split(new[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
+
+        // se to tu už může dostat bez protokolu
+        //if (p.Count != 2)
+        //{
+        //    throw new Exception("Wrong count of parts");
+        //}
+
+        var dx = 0;
+        if (p.Count == 2) dx = 1;
+
+        p[dx] = SHParts.RemoveAfterFirstChar(p[dx], AllChars.slash);
+
+        return SHTrim.TrimStart(string.Join(Consts.lc, p).TrimEnd(AllChars.slash), "www.");
+    }
+
+    public static string GetToken(string href, int v)
+    {
+        var tokens = href.Split(new[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries)
+            .ToList(); //SHSplit.SplitMore(href, AllStrings.slash);
+
+        return tokens[tokens.Count + v];
+    }
 
     #region Append
 
     public static string AppendHttpsIfNotExists(string p)
     {
-        string p2 = p;
-        if (!p.StartsWith("https"))
-        {
-            p2 = "https://" + p;
-        }
+        var p2 = p;
+        if (!p.StartsWith("https")) p2 = "https://" + p;
 
         return p2;
     }
+
     public static string AppendHttpIfNotExists(string p)
     {
-        string p2 = p;
-        if (!p.StartsWith("http"))
-        {
-            p2 = "http://" + p;
-        }
+        var p2 = p;
+        if (!p.StartsWith("http")) p2 = "http://" + p;
 
         return p2;
     }
+
     #endregion
 
     #region GetUriSafeString
+
     public static string GetUriSafeString(string title)
     {
-        if (String.IsNullOrEmpty(title)) return "";
+        if (string.IsNullOrEmpty(title)) return "";
 
         title = SH.AddBeforeUpperChars(title, AllChars.dash, false);
 
@@ -87,24 +180,24 @@ public class UH
         // collapse dashes
         title = Regex.Replace(title, @"-{2,}", AllStrings.dash);
         // trim excessive dashes at the beginning
-        title = title.TrimStart(new char[] { AllChars.dash });
+        title = title.TrimStart(new[] { AllChars.dash });
         // if it's too long, clip it
         if (title.Length > 80)
             title = title.Substring(0, 79);
         // remove trailing dashes
-        title = title.TrimEnd(new char[] { AllChars.dash });
+        title = title.TrimEnd(new[] { AllChars.dash });
         return title;
     }
 
     public static void BeforeCombine(ref string hostApp)
     {
-        hostApp = SH.PrefixIfNotStartedWith(hostApp, Consts.https, false);
+        hostApp = SH.PrefixIfNotStartedWith(hostApp, Consts.https);
         hostApp = SH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
     }
 
     public static string GetUriSafeString(string title, int maxLenght)
     {
-        if (String.IsNullOrEmpty(title)) return "";
+        if (string.IsNullOrEmpty(title)) return "";
 
         title = title.RemoveDiacritics();
         // replace spaces with single dash
@@ -123,10 +216,10 @@ public class UH
         // collapse dashes
         title = Regex.Replace(title, @"-{2,}", AllStrings.dash);
         // trim excessive dashes at the beginning
-        title = title.TrimStart(new char[] { AllChars.dash });
+        title = title.TrimStart(new[] { AllChars.dash });
         // remove trailing dashes
-        title = title.TrimEnd(new char[] { AllChars.dash });
-        title = SHReplace.ReplaceAll(title, AllStrings.dash, new string[] { "--" });
+        title = title.TrimEnd(new[] { AllChars.dash });
+        title = SHReplace.ReplaceAll(title, AllStrings.dash, "--");
         // if it's too long, clip it
         if (title.Length > maxLenght)
             title = title.Substring(0, maxLenght);
@@ -136,35 +229,33 @@ public class UH
 
     public static string GetUriSafeString(string tagName, int maxLength, Func<string, bool> methodInWebExists)
     {
-        string uri = UH.GetUriSafeString(tagName, maxLength);
-        int pripocist = 1;
+        var uri = GetUriSafeString(tagName, maxLength);
+        var pripocist = 1;
         while (methodInWebExists.Invoke(uri))
-        {
             if (uri.Length + pripocist.ToString().Length >= maxLength)
             {
                 tagName = tagName.Substring(0, tagName.Length - 1); //SH.RemoveLastChar(tagName);
             }
             else
             {
-                string prip = pripocist.ToString();
-                if (pripocist == 1)
-                {
-                    prip = "";
-                }
-                uri = UH.GetUriSafeString(tagName + prip, maxLength);
+                var prip = pripocist.ToString();
+                if (pripocist == 1) prip = "";
+                uri = GetUriSafeString(tagName + prip, maxLength);
                 pripocist++;
             }
-        }
+
         return uri;
     }
+
     #endregion
 
     #region Change in uri
+
     public static string UrlDecodeWithRemovePathSeparatorCharacter(string pridat)
     {
         pridat = WebUtility.UrlDecode(pridat);
         //%22 = \
-        pridat = SHReplace.ReplaceAll(pridat, "", new string[] { "%22", "%5c" });
+        pridat = SHReplace.ReplaceAll(pridat, "", "%22", "%5c");
         return pridat;
     }
 
@@ -176,23 +267,17 @@ public class UH
 
     public static string CombineTrimEndSlash(params string[] p)
     {
-        StringBuilder vr = new StringBuilder();
-        foreach (string item in p)
+        var vr = new StringBuilder();
+        foreach (var item in p)
         {
-            if (string.IsNullOrWhiteSpace(item))
-            {
-                continue;
-            }
+            if (string.IsNullOrWhiteSpace(item)) continue;
             if (item[item.Length - 1] == AllChars.slash)
-            {
                 vr.Append(item.TrimStart(AllChars.slash));
-            }
             else
-            {
                 vr.Append(item.TrimStart(AllChars.slash) + AllChars.slash);
-            }
             //vr.Append(item.TrimEnd(AllChars.slash) + AllStrings.slash);
         }
+
         return vr.ToString().TrimEnd(AllChars.slash);
     }
 
@@ -207,7 +292,7 @@ public class UH
     }
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login.aspx
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login.aspx
     /// </summary>
     /// <param name="rp"></param>
     public static string GetFileName(string rp, bool wholeUrl = false)
@@ -218,28 +303,29 @@ public class UH
             //var result = FS.ReplaceInvalidFileNameChars(d, EmptyArrays.Chars);
             return d;
         }
+
         rp = SHParts.RemoveAfterFirst(rp, AllStrings.q);
         rp = rp.TrimEnd(AllChars.slash);
-        int dex = rp.LastIndexOf(AllChars.slash);
+        var dex = rp.LastIndexOf(AllChars.slash);
         return rp.Substring(dex + 1);
     }
 
     #endregion
 
     #region Get parts of uri
-    /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => ""
-    /// </summary>
 
+    /// <summary>
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => ""
+    /// </summary>
     public static string GetExtension(string image)
     {
         return Path.GetExtension(image);
     }
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => ?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon
-    /// Vr�t� cel� QS v�etn� po��te�n�ho otazn�ku
-    ///
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
+    ///     ?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon
+    ///     Vr�t� cel� QS v�etn� po��te�n�ho otazn�ku
     /// </summary>
     public static string GetQueryAsHttpRequest(Uri uri)
     {
@@ -247,15 +333,12 @@ public class UH
     }
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => /Me/Login.aspx
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => /Me/Login.aspx
     /// </summary>
     public static string GetPageNameFromUri(Uri uri)
     {
-        int nt = uri.PathAndQuery.IndexOf(AllStrings.q);
-        if (nt != -1)
-        {
-            return uri.PathAndQuery.Substring(0, nt);
-        }
+        var nt = uri.PathAndQuery.IndexOf(AllStrings.q);
+        if (nt != -1) return uri.PathAndQuery.Substring(0, nt);
         return uri.PathAndQuery;
     }
 
@@ -275,9 +358,9 @@ public class UH
     //}
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => GetFileNameWithoutExtension: Login
-    /// Pod�v� naprosto stejn� v�sledek jako UH.GetPageNameFromUri
-    ///
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
+    ///     GetFileNameWithoutExtension: Login
+    ///     Pod�v� naprosto stejn� v�sledek jako UH.GetPageNameFromUri
     /// </summary>
     /// <param name="uri"></param>
     public static string GetFilePathAsHttpRequest(Uri uri)
@@ -287,35 +370,31 @@ public class UH
 
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
     /// </summary>
     public static string GetProtocolString(Uri uri)
     {
         return uri.Scheme + "://";
     }
+
     #endregion
 
     #region Other
+
     /// <summary>
-    /// Vr�t� true pokud m� A1 protokol http nebo https
+    ///     Vr�t� true pokud m� A1 protokol http nebo https
     /// </summary>
     /// <param name="p"></param>
     public static bool HasHttpProtocol(string p)
     {
         p = p.ToLower();
-        if (p.StartsWith(Consts.http))
-        {
-            return true;
-        }
-        if (p.StartsWith(Consts.https))
-        {
-            return true;
-        }
+        if (p.StartsWith(Consts.http)) return true;
+        if (p.StartsWith(Consts.https)) return true;
         return false;
     }
 
     /// <summary>
-    /// create also for page:
+    ///     create also for page:
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
@@ -332,13 +411,14 @@ public class UH
         }
     }
 
-    public static string urlDecoded = null;
+    public static string urlDecoded;
 
     public static bool IsUrlEncoded(string uri)
     {
-        urlDecoded = UH.UrlDecode(uri);
+        urlDecoded = UrlDecode(uri);
         return urlDecoded != uri;
     }
+
     #endregion
 
     #region Other methods
@@ -347,18 +427,17 @@ public class UH
     {
         // Uri must be checked always before passed into method. Then I would make same checks again and again
         var uri = CreateUri(s);
-        var result = SHReplace.ReplaceAll(uri.Host, AllStrings.space, new string[] { AllStrings.dot });
+        var result = SHReplace.ReplaceAll(uri.Host, AllStrings.space, AllStrings.dot);
         result = CaseConverter.CamelCase.ConvertCase(result);
 
-        StringBuilder sb = new StringBuilder(result);
+        var sb = new StringBuilder(result);
         sb[0] = char.ToUpper(sb[0]);
         return sb.ToString();
-
     }
 
     private static string GetUriSafeString2(string title)
     {
-        if (String.IsNullOrEmpty(title)) return "";
+        if (string.IsNullOrEmpty(title)) return "";
 
         // remove entities
         title = Regex.Replace(title, @"&\w+;", "");
@@ -383,7 +462,7 @@ public class UH
 
     public static string InsertBetweenPathAndFile(string uri, string vlozit)
     {
-        var s = uri.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        var s = uri.Split(new[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList();
         s[s.Count - 2] += AllStrings.slash + vlozit;
         //Uri uri2 = new Uri(uri);
         string vr = null;
@@ -395,79 +474,69 @@ public class UH
     {
         hostnameEndsWith = hostnameEndsWith.ToLower();
         pathContaint = pathContaint.ToLower();
-        Uri uri = CreateUri(source.ToString().ToLower());
+        var uri = CreateUri(source.ToString().ToLower());
         if (uri.Host.EndsWith(hostnameEndsWith))
-        {
-            if (UH.GetFilePathAsHttpRequest(uri).Contains(pathContaint))
-            {
+            if (GetFilePathAsHttpRequest(uri).Contains(pathContaint))
                 foreach (var item in qsContainsAll)
                 {
-                    if (!uri.Query.Contains(item))
-                    {
-                        return false;
-                    }
+                    if (!uri.Query.Contains(item)) return false;
                     return true;
                 }
-            }
-        }
+
         return false;
     }
-
 
     #endregion
 
     #region Is*
+
     public static bool IsHttpDecoded(ref string input)
     {
-        string decoded = WebUtility.UrlDecode(input);
+        var decoded = WebUtility.UrlDecode(input);
         if (true)
         {
         }
+
         return false;
     }
 
     public static string RemoveTrackingPart(string v)
     {
         var r = SHParts.RemoveAfterFirst(v, "#utm_");
-        r = UH.RemovePrefixHttpOrHttps(r);
+        r = RemovePrefixHttpOrHttps(r);
         r = SHParts.RemoveAfterFirstChar(r, AllChars.slash);
 
-        if (r.Contains(AllStrings.dot))
-        {
-            return Consts.https + r;
-        }
+        if (r.Contains(AllStrings.dot)) return Consts.https + r;
 
         return r;
         //return v.Substring("#utm_source")
     }
 
     /// <summary>
-    /// A2 can be * - then return true for any domain
+    ///     A2 can be * - then return true for any domain
     /// </summary>
     /// <param name="p"></param>
     /// <param name="domain"></param>
     public static bool IsValidUriAndDomainIs(string p, string domain, out bool surelyDomain)
     {
-        string p2 = AppendHttpIfNotExists(p);
+        var p2 = AppendHttpIfNotExists(p);
         Uri uri = null;
         surelyDomain = false;
 
         // Nema smysl hledat na přípony souborů, vrátil bych false pro to co by možná byla doména. Dnes už doména může být opravdu jakákoliv
 
         if (Uri.TryCreate(p2, UriKind.Absolute, out uri))
-        {
             if (uri.Host == domain || domain == "*")
-            {
                 return true;
-            }
-        }
         return false;
     }
+
     #endregion
 
     #region Get parts of URI
+
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => lyrics.sunamo.cz
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => lyrics.sunamo.cz
     /// </summary>
     public static string GetHost(string s)
     {
@@ -476,46 +545,41 @@ public class UH
     }
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => https://lyrics.sunamo.cz/Me/
-    /// Return by convetion with / on end
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
+    ///     https://lyrics.sunamo.cz/Me/
+    ///     Return by convetion with / on end
     /// </summary>
     /// <param name="rp"></param>
     public static string GetDirectoryName(string rp)
     {
-        if (rp != AllStrings.slash)
-        {
-            rp = rp.TrimEnd(AllChars.slash);
-        }
+        if (rp != AllStrings.slash) rp = rp.TrimEnd(AllChars.slash);
 
         rp = SHParts.RemoveAfterFirstChar(rp, AllChars.q);
 
-        int dex = rp.LastIndexOf(AllChars.slash);
-        if (dex != -1)
-        {
-            return rp.Substring(0, dex + 1);
-        }
+        var dex = rp.LastIndexOf(AllChars.slash);
+        if (dex != -1) return rp.Substring(0, dex + 1);
         return rp;
     }
 
     /// <summary>
-    /// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login
+    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login
     /// </summary>
     /// <param name="p"></param>
     public static string GetFileNameWithoutExtension(string p)
     {
         return Path.GetFileNameWithoutExtension(GetFileName(p));
     }
+
     #endregion
 
     #region Join, Combine
+
     /// <param name="p"></param>
     public static string Combine(bool dir, params string[] p)
     {
-        string vr = string.Join(AllChars.slash, p).Replace("///", AllStrings.slash).Replace("//", AllStrings.slash).TrimEnd(AllChars.slash).Replace(":/", "://");
-        if (dir)
-        {
-            vr += AllStrings.slash;
-        }
+        var vr = string.Join(AllChars.slash, p).Replace("///", AllStrings.slash).Replace("//", AllStrings.slash)
+            .TrimEnd(AllChars.slash).Replace(":/", "://");
+        if (dir) vr += AllStrings.slash;
         return vr;
     }
 
@@ -532,15 +596,12 @@ public class UH
     /// <param name="p"></param>
     public static string Combine(IList<string> p)
     {
-        StringBuilder vr = new StringBuilder();
-        int i = 0;
-        foreach (string item in p)
+        var vr = new StringBuilder();
+        var i = 0;
+        foreach (var item in p)
         {
             i++;
-            if (string.IsNullOrWhiteSpace(item))
-            {
-                continue;
-            }
+            if (string.IsNullOrWhiteSpace(item)) continue;
             if (item[item.Length - 1] == AllChars.slash)
             {
                 vr.Append(item);
@@ -548,26 +609,23 @@ public class UH
             else
             {
                 if (i == p.Count && Path.GetExtension(item) != "")
-                {
                     vr.Append(item);
-                }
                 else
-                {
                     vr.Append(item + AllChars.slash);
-                }
             }
             //vr.Append(item.TrimEnd(AllChars.slash) + AllStrings.slash);
         }
+
         return vr.ToString();
     }
+
     #endregion
 
     #region Ŕemove*
 
-
     /// <summary>
-    /// V p��pad� �e v A1 nebude protokol, ulo�� se do A2 ""
-    /// V p��pad� �e tam protokol bude, ulo�� se do A2 v�etn� ://
+    ///     V p��pad� �e v A1 nebude protokol, ulo�� se do A2 ""
+    ///     V p��pad� �e tam protokol bude, ulo�� se do A2 v�etn� ://
     /// </summary>
     /// <param name="t"></param>
     /// <param name="protocol"></param>
@@ -579,19 +637,21 @@ public class UH
             t = t.Replace("http://", "");
             return t;
         }
+
         if (t.Contains("https://"))
         {
             protocol = "https://";
             t = t.Replace("https://", "");
             return t;
         }
+
         protocol = "";
         return t;
     }
 
 
     /// <summary>
-    /// pass also for page:
+    ///     pass also for page:
     /// </summary>
     /// <param name="href"></param>
     /// <returns></returns>
@@ -600,107 +660,6 @@ public class UH
         var uri = CreateUri(href);
         return uri != null;
     }
+
     #endregion
-
-    /// <summary>
-    /// first upper, other lower
-    /// </summary>
-    /// <param name="v"></param>
-    /// <returns></returns>
-    public static string DebugLocalhost(string v)
-    {
-        v = v.ToLower();
-        StringBuilder sb = new StringBuilder(v);
-        sb[0] = char.ToUpper(sb[0]);
-        v = sb.ToString();
-
-        if (v != sess.i18n(XlfKeys.Nope))
-        {
-            List<FieldInfo> co = null;
-
-            co = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
-            var co2 = co.Where(d => d.Name.StartsWith(v)).First();
-            var vr = Consts.https + co2.GetValue(null).ToString() + "/";
-            return vr;
-        }
-#if !DEBUG
-
-        return Consts.HttpSunamoCzSlash;
-#endif
-        return Consts.HttpLocalhostSlash;
-    }
-
-    public static bool IsWellFormedUriString(ref string uri, UriKind absolute)
-    {
-        uri = uri.Trim();
-        uri = uri.TrimEnd(AllChars.colon);
-
-        var v = Uri.IsWellFormedUriString(uri, absolute);
-        if (v)
-        {
-            uri = UH.AppendHttpIfNotExists(uri);
-        }
-        return v;
-    }
-
-    public static string GetPathname(string uri)
-    {
-        uri = UH.RemovePrefixHttpOrHttps(uri);
-
-        uri = SHParts.KeepAfterFirst(uri, AllStrings.slash, false);
-
-        return uri;
-    }
-
-    public static string SanitizeKeepOnlyHost(string s)
-    {
-        s = UH.RemoveProtocol(s);
-        s = SHParts.RemoveAfterFirstChar(s, AllChars.slash);
-        s = s.Replace("www.", "");
-        s = s.TrimEnd(AllChars.slash);
-
-        return s;
-    }
-
-    private static string RemoveProtocol(string s)
-    {
-        s = SH.ReplaceOnce(s, Consts.http, Consts.se);
-        s = SH.ReplaceOnce(s, Consts.https, Consts.se);
-
-        return s;
-    }
-
-    /// <summary>
-    /// Remove also last slash and www.
-    /// </summary>
-    /// <param name="v"></param>
-    /// <returns></returns>
-    public static string KeepOnlyHostAndProtocol(string v)
-    {
-        var p = v.Split(new String[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
-
-        // se to tu už může dostat bez protokolu
-        //if (p.Count != 2)
-        //{
-        //    throw new Exception("Wrong count of parts");
-        //}
-
-        var dx = 0;
-        if (p.Count == 2)
-        {
-            dx = 1;
-        }
-
-        p[dx] = SHParts.RemoveAfterFirstChar(p[dx], AllChars.slash);
-
-        return SHTrim.TrimStart(string.Join(Consts.lc, p).TrimEnd(AllChars.slash), "www.");
-    }
-
-    public static string GetToken(string href, int v)
-    {
-        var tokens = href.Split(new String[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(href, AllStrings.slash);
-
-        return tokens[tokens.Count + v];
-    }
 }
