@@ -1,6 +1,5 @@
-using SunamoUri._sunamo;
-
 namespace SunamoUri;
+using SunamoUri._sunamo;
 
 public class UH
 {
@@ -406,7 +405,7 @@ public class UH
         }
         catch (Exception ex)
         {
-            ThrowEx.DummyNotThrow(ex);
+            ThrowEx.Custom(ex);
             return null;
         }
     }
