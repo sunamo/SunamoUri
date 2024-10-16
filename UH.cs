@@ -22,7 +22,7 @@ public class UH
     public static string RemoveHostAndProtocol(Uri uri)
     {
         var p = RemovePrefixHttpOrHttps(uri.ToString());
-        var dex = p.IndexOf(AllChars.slash);
+        var dex = p.IndexOf('/');
         return p.Substring(dex);
     }
 
@@ -57,19 +57,19 @@ public class UH
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                 .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
             var co2 = co.Where(d => d.Name.StartsWith(v)).First();
-            var vr = Consts.https + co2.GetValue(null) + "/";
+            var vr = "https://" + co2.GetValue(null) + " / ";
             return vr;
         }
 #if !DEBUG
-        return Consts.HttpSunamoCzSlash;
+        return "https://sunamo.cz";
 #endif
-        return Consts.HttpLocalhostSlash;
+        return "https://sunamo.net";
     }
 
     public static bool IsWellFormedUriString(ref string uri, UriKind absolute)
     {
         uri = uri.Trim();
-        uri = uri.TrimEnd(AllChars.colon);
+        uri = uri.TrimEnd(':');
 
         var v = Uri.IsWellFormedUriString(uri, absolute);
         if (v) uri = AppendHttpIfNotExists(uri);
@@ -80,7 +80,7 @@ public class UH
     {
         uri = RemovePrefixHttpOrHttps(uri);
 
-        uri = SHParts.KeepAfterFirst(uri, AllStrings.slash);
+        uri = SHParts.KeepAfterFirst(uri, "/");
 
         return uri;
     }
@@ -88,17 +88,17 @@ public class UH
     public static string SanitizeKeepOnlyHost(string s)
     {
         s = RemoveProtocol(s);
-        s = SHParts.RemoveAfterFirstChar(s, AllChars.slash);
+        s = SHParts.RemoveAfterFirstChar(s, '/');
         s = s.Replace("www.", "");
-        s = s.TrimEnd(AllChars.slash);
+        s = s.TrimEnd('/');
 
         return s;
     }
 
     private static string RemoveProtocol(string s)
     {
-        s = SH.ReplaceOnce(s, Consts.http, Consts.se);
-        s = SH.ReplaceOnce(s, Consts.https, Consts.se);
+        s = SH.ReplaceOnce(s, "http:", "");
+        s = SH.ReplaceOnce(s, "https:", "");
 
         return s;
     }
@@ -110,7 +110,7 @@ public class UH
     /// <returns></returns>
     public static string KeepOnlyHostAndProtocol(string v)
     {
-        var p = v.Split(new[] { Consts.lc }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
+        var p = v.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
 
         // se to tu už může dostat bez protokolu
         //if (p.Count != 2)
@@ -121,15 +121,15 @@ public class UH
         var dx = 0;
         if (p.Count == 2) dx = 1;
 
-        p[dx] = SHParts.RemoveAfterFirstChar(p[dx], AllChars.slash);
+        p[dx] = SHParts.RemoveAfterFirstChar(p[dx], '/');
 
-        return SHTrim.TrimStart(string.Join(Consts.lc, p).TrimEnd(AllChars.slash), "www.");
+        return SHTrim.TrimStart(string.Join("//", p).TrimEnd('/'), "www.");
     }
 
     public static string GetToken(string href, int v)
     {
-        var tokens = href.Split(new[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries)
-            .ToList(); //SHSplit.SplitMore(href, AllStrings.slash);
+        var tokens = href.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries)
+            .ToList(); //SHSplit.SplitMore(href, "/");
 
         return tokens[tokens.Count + v];
     }
@@ -160,13 +160,13 @@ public class UH
     {
         if (string.IsNullOrEmpty(title)) return "";
 
-        title = SH.AddBeforeUpperChars(title, AllChars.dash, false);
+        title = SH.AddBeforeUpperChars(title, '-', false);
 
         title = title.RemoveDiacritics();
         // replace spaces with single dash
-        title = Regex.Replace(title, @"\s+", AllStrings.dash);
+        title = Regex.Replace(title, @"\s+", "-");
         // if we end up with multiple dashes, collapse to single dash
-        title = Regex.Replace(title, @"\-{2,}", AllStrings.dash);
+        title = Regex.Replace(title, @"\-{2,}", "-");
 
         // make it all lower case
         title = title.ToLower();
@@ -175,23 +175,23 @@ public class UH
         // remove anything that is not letters, numbers, dash, or space
         title = Regex.Replace(title, @"[^a-z0-9\-\s]", "");
         // replace spaces
-        title = title.Replace(AllChars.space, AllChars.dash);
+        title = title.Replace(' ', '-');
         // collapse dashes
-        title = Regex.Replace(title, @"-{2,}", AllStrings.dash);
+        title = Regex.Replace(title, @"-{2,}", "-");
         // trim excessive dashes at the beginning
-        title = title.TrimStart(new[] { AllChars.dash });
+        title = title.TrimStart(new[] { '-' });
         // if it's too long, clip it
         if (title.Length > 80)
             title = title.Substring(0, 79);
         // remove trailing dashes
-        title = title.TrimEnd(new[] { AllChars.dash });
+        title = title.TrimEnd(new[] { '-' });
         return title;
     }
 
     public static void BeforeCombine(ref string hostApp)
     {
-        hostApp = SH.PrefixIfNotStartedWith(hostApp, Consts.https);
-        hostApp = SH.PostfixIfNotEmpty(hostApp, AllStrings.slash);
+        hostApp = SH.PrefixIfNotStartedWith(hostApp, "https://");
+        hostApp = SH.PostfixIfNotEmpty(hostApp, "/");
     }
 
     public static string GetUriSafeString(string title, int maxLenght)
@@ -200,9 +200,9 @@ public class UH
 
         title = title.RemoveDiacritics();
         // replace spaces with single dash
-        title = Regex.Replace(title, @"\s+", AllStrings.dash);
+        title = Regex.Replace(title, @"\s+", "-");
         // if we end up with multiple dashes, collapse to single dash
-        title = Regex.Replace(title, @"\-{2,}", AllStrings.dash);
+        title = Regex.Replace(title, @"\-{2,}", "-");
 
         // make it all lower case
         title = title.ToLower();
@@ -211,14 +211,14 @@ public class UH
         // remove anything that is not letters, numbers, dash, or space
         title = Regex.Replace(title, @"[^a-z0-9\-\s]", "");
         // replace spaces
-        title = title.Replace(AllChars.space, AllChars.dash);
+        title = title.Replace(' ', '-');
         // collapse dashes
-        title = Regex.Replace(title, @"-{2,}", AllStrings.dash);
+        title = Regex.Replace(title, @"-{2,}", "-");
         // trim excessive dashes at the beginning
-        title = title.TrimStart(new[] { AllChars.dash });
+        title = title.TrimStart(new[] { '-' });
         // remove trailing dashes
-        title = title.TrimEnd(new[] { AllChars.dash });
-        title = SHReplace.ReplaceAll(title, AllStrings.dash, "--");
+        title = title.TrimEnd(new[] { '-' });
+        title = SHReplace.ReplaceAll(title, "-", "--");
         // if it's too long, clip it
         if (title.Length > maxLenght)
             title = title.Substring(0, maxLenght);
@@ -270,14 +270,14 @@ public class UH
         foreach (var item in p)
         {
             if (string.IsNullOrWhiteSpace(item)) continue;
-            if (item[item.Length - 1] == AllChars.slash)
-                vr.Append(item.TrimStart(AllChars.slash));
+            if (item[item.Length - 1] == '/')
+                vr.Append(item.TrimStart('/'));
             else
-                vr.Append(item.TrimStart(AllChars.slash) + AllChars.slash);
-            //vr.Append(item.TrimEnd(AllChars.slash) + AllStrings.slash);
+                vr.Append(item.TrimStart('/') + '/');
+            //vr.Append(item.TrimEnd('/') + "/");
         }
 
-        return vr.ToString().TrimEnd(AllChars.slash);
+        return vr.ToString().TrimEnd('/');
     }
 
     public static string UrlEncode(string co)
@@ -298,14 +298,14 @@ public class UH
     {
         if (wholeUrl)
         {
-            var d = SHParts.RemoveAfterFirst(rp, AllStrings.q);
+            var d = SHParts.RemoveAfterFirst(rp, "?");
             //var result = FS.ReplaceInvalidFileNameChars(d, EmptyArrays.Chars);
             return d;
         }
 
-        rp = SHParts.RemoveAfterFirst(rp, AllStrings.q);
-        rp = rp.TrimEnd(AllChars.slash);
-        var dex = rp.LastIndexOf(AllChars.slash);
+        rp = SHParts.RemoveAfterFirst(rp, "?");
+        rp = rp.TrimEnd('/');
+        var dex = rp.LastIndexOf('/');
         return rp.Substring(dex + 1);
     }
 
@@ -336,7 +336,7 @@ public class UH
     /// </summary>
     public static string GetPageNameFromUri(Uri uri)
     {
-        var nt = uri.PathAndQuery.IndexOf(AllStrings.q);
+        var nt = uri.PathAndQuery.IndexOf("?");
         if (nt != -1) return uri.PathAndQuery.Substring(0, nt);
         return uri.PathAndQuery;
     }
@@ -351,7 +351,7 @@ public class UH
     //{
     //    if (!atr.StartsWith("https://") && !atr.StartsWith("https://"))
     //    {
-    //        return GetPageNameFromUri(new Uri("https://" + host + AllStrings.slash + atr.TrimStart(AllChars.slash)));
+    //        return GetPageNameFromUri(new Uri("https://" + host + "/" + atr.TrimStart('/')));
     //    }
     //    return GetPageNameFromUri(new Uri(atr));
     //}
@@ -387,8 +387,8 @@ public class UH
     public static bool HasHttpProtocol(string p)
     {
         p = p.ToLower();
-        if (p.StartsWith(Consts.http)) return true;
-        if (p.StartsWith(Consts.https)) return true;
+        if (p.StartsWith("http://")) return true;
+        if (p.StartsWith("https://")) return true;
         return false;
     }
 
@@ -426,7 +426,7 @@ public class UH
     {
         // Uri must be checked always before passed into method. Then I would make same checks again and again
         var uri = CreateUri(s);
-        var result = SHReplace.ReplaceAll(uri.Host, AllStrings.space, AllStrings.dot);
+        var result = SHReplace.ReplaceAll(uri.Host, "", ".");
         result = CaseConverter.CamelCase.ConvertCase(result);
 
         var sb = new StringBuilder(result);
@@ -445,24 +445,24 @@ public class UH
         // remove any leading or trailing spaces left over
         title = title.Trim();
         // replace spaces with single dash
-        title = Regex.Replace(title, @"\s+", AllStrings.dash);
+        title = Regex.Replace(title, @"\s+", "-");
         // if we end up with multiple dashes, collapse to single dash
-        title = Regex.Replace(title, @"\-{2,}", AllStrings.dash);
+        title = Regex.Replace(title, @"\-{2,}", "-");
         // make it all lower case
         title = title.ToLower();
         // if it's too long, clip it
         if (title.Length > 80)
             title = title.Substring(0, 79);
         // remove trailing dash, if there is one
-        if (title.EndsWith(AllStrings.dash))
+        if (title.EndsWith("-"))
             title = title.Substring(0, title.Length - 1);
         return title;
     }
 
     public static string InsertBetweenPathAndFile(string uri, string vlozit)
     {
-        var s = uri.Split(new[] { AllStrings.slash }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        s[s.Count - 2] += AllStrings.slash + vlozit;
+        var s = uri.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        s[s.Count - 2] += "/" + vlozit;
         //Uri uri2 = new Uri(uri);
         string vr = null;
         vr = Join(s.ToArray());
@@ -503,9 +503,9 @@ public class UH
     {
         var r = SHParts.RemoveAfterFirst(v, "#utm_");
         r = RemovePrefixHttpOrHttps(r);
-        r = SHParts.RemoveAfterFirstChar(r, AllChars.slash);
+        r = SHParts.RemoveAfterFirstChar(r, '/');
 
-        if (r.Contains(AllStrings.dot)) return Consts.https + r;
+        if (r.Contains(".")) return "https://" + r;
 
         return r;
         //return v.Substring("#utm_source")
@@ -551,11 +551,11 @@ public class UH
     /// <param name="rp"></param>
     public static string GetDirectoryName(string rp)
     {
-        if (rp != AllStrings.slash) rp = rp.TrimEnd(AllChars.slash);
+        if (rp != "/") rp = rp.TrimEnd('/');
 
-        rp = SHParts.RemoveAfterFirstChar(rp, AllChars.q);
+        rp = SHParts.RemoveAfterFirstChar(rp, '?');
 
-        var dex = rp.LastIndexOf(AllChars.slash);
+        var dex = rp.LastIndexOf('/');
         if (dex != -1) return rp.Substring(0, dex + 1);
         return rp;
     }
@@ -576,15 +576,15 @@ public class UH
     /// <param name="p"></param>
     public static string Combine(bool dir, params string[] p)
     {
-        var vr = string.Join(AllChars.slash, p).Replace("///", AllStrings.slash).Replace("//", AllStrings.slash)
-            .TrimEnd(AllChars.slash).Replace(":/", "://");
-        if (dir) vr += AllStrings.slash;
+        var vr = string.Join('/', p).Replace("///", "/").Replace("//", "/")
+            .TrimEnd('/').Replace(":/", "://");
+        if (dir) vr += "/";
         return vr;
     }
 
     private static string Join(params string[] s)
     {
-        return string.Join(AllChars.slash, s);
+        return string.Join('/', s);
     }
 
     public static string Combine(params string[] p)
@@ -601,7 +601,7 @@ public class UH
         {
             i++;
             if (string.IsNullOrWhiteSpace(item)) continue;
-            if (item[item.Length - 1] == AllChars.slash)
+            if (item[item.Length - 1] == '/')
             {
                 vr.Append(item);
             }
@@ -610,9 +610,9 @@ public class UH
                 if (i == p.Count && Path.GetExtension(item) != "")
                     vr.Append(item);
                 else
-                    vr.Append(item + AllChars.slash);
+                    vr.Append(item + '/');
             }
-            //vr.Append(item.TrimEnd(AllChars.slash) + AllStrings.slash);
+            //vr.Append(item.TrimEnd('/') + "/");
         }
 
         return vr.ToString();

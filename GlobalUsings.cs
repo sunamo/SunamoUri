@@ -17,7 +17,7 @@ global using SunamoUri._sunamo.SunamoStringParts;
 global using SunamoUri._sunamo.SunamoStringReplace;
 global using SunamoUri._sunamo.SunamoStringSubstring;
 global using SunamoUri._sunamo.SunamoStringTrim;
-global using SunamoUri._sunamo.SunamoValues;
+global using SunamoUri;
 global using SunamoUri._sunamo.SunamoExceptions;
 global using SunamoUri._sunamo.SunamoLang.SunamoI18N;
 global using SunamoUri._sunamo.SunamoValues.Values;

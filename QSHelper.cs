@@ -11,7 +11,7 @@ public class QSHelper
     /// </summary>
     public static string GetParameter(string uri, string nameParam)
     {
-        var main = uri.Split(new[] { AllStrings.q, "&" }, StringSplitOptions.RemoveEmptyEntries);
+        var main = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var var in main)
         {
             var v = var.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
@@ -64,7 +64,7 @@ public class QSHelper
         var p = p2.ToList();
 
         var sb = new StringBuilder();
-        sb.Append(adresa + AllStrings.q);
+        sb.Append(adresa + "?");
         var to = p.Count / 2 * 2;
         for (var i = 0; i < p.Count; i++)
         {
@@ -81,9 +81,9 @@ public class QSHelper
     public static string GetQS(string adresa, Dictionary<string, string> p2)
     {
         var sb = new StringBuilder();
-        sb.Append(adresa + AllStrings.q);
+        sb.Append(adresa + "?");
 
-        foreach (var item in p2) sb.Append(item.Key + AllStrings.equals + item.Value + AllStrings.amp);
+        foreach (var item in p2) sb.Append(item.Key + "=" + item.Value + "&");
 
         return sb.ToString().TrimEnd('&');
     }
@@ -118,7 +118,7 @@ public class QSHelper
     {
         var d = new Dictionary<string, string>();
 
-        qs = qs.TrimStart(AllChars.q);
+        qs = qs.TrimStart('?');
 
         var parts = qs.Split(new[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries)
             .ToList(); // SHSplit.SplitMore(qs, );
@@ -140,18 +140,18 @@ public class QSHelper
             for (var i = 0; i < to; i++)
             {
                 var k = p[i];
-                sb.Append(AllStrings.qm + k + AllStrings.qm);
-                if (to2 != i) sb.Append(AllStrings.comma);
+                sb.Append("\"" + k + "\"");
+                if (to2 != i) sb.Append(",");
             }
         else
             for (var i = 0; i < to; i++)
             {
                 var k = p[i];
                 sb.Append("su.ToString(" + k + ")");
-                if (to2 != i) sb.Append(AllStrings.comma);
+                if (to2 != i) sb.Append(",");
             }
 
-        sb.Append(AllStrings.rb);
+        sb.Append(")");
     }
 
     public static Dictionary<string, string> ParseQs(NameValueCollection qs)
