@@ -23,3 +23,4 @@ global using SunamoUri._sunamo.SunamoValues.Values;
 global using Case.NET;
 global using System.Diagnostics;
 global using SunamoUri._sunamo.SunamoString;
+global using System.Diagnostics.CodeAnalysis;
