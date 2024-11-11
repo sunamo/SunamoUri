@@ -426,7 +426,7 @@ public class UH
     {
         // Uri must be checked always before passed into method. Then I would make same checks again and again
         var uri = CreateUri(s);
-        var result = SHReplace.ReplaceAll(uri.Host, "", ".");
+        var result = SHReplace.ReplaceAll(uri.Host, " ", ".");
         result = CaseConverter.CamelCase.ConvertCase(result);
 
         var sb = new StringBuilder(result);
