@@ -299,7 +299,7 @@ public class UH
         if (wholeUrl)
         {
             var d = SHParts.RemoveAfterFirst(rp, "?");
-            //var result = FS.ReplaceInvalidFileNameChars(d, EmptyArrays.Chars);
+            //var result = FS.ReplaceInvalidFileNameChars(d, []);
             return d;
         }
 
