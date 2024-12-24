@@ -49,7 +49,7 @@ public class UH
         sb[0] = char.ToUpper(sb[0]);
         v = sb.ToString();
 
-        if (v != sess.i18n(XlfKeys.Nope))
+        if (v != Translate.FromKey(XlfKeys.Nope))
         {
             List<FieldInfo> co = null;
 
