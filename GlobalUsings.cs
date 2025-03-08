@@ -26,7 +26,6 @@ global using SunamoUri._sunamo.SunamoString;
 global using System.Diagnostics.CodeAnalysis;
 global using SunamoUri;
 global using SunamoUri._sunamo;
-
 global using ILogger = Microsoft.Extensions.Logging.ILogger;
 global using Microsoft.Extensions.Logging;
 global using NullLogger = Microsoft.Extensions.Logging.Abstractions.NullLogger;

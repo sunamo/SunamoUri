@@ -330,7 +330,7 @@ public class UH
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static Uri CreateUri(string s)
+    public static Uri CreateUri(ILogger logger, string s)
     {
         try
         {
@@ -338,7 +338,8 @@ public class UH
         }
         catch (Exception ex)
         {
-            ThrowEx.Custom(ex);
+            logger.LogError("Can't construct url from " + s);
+            //ThrowEx.Custom(ex);
             return null;
         }
     }
@@ -350,10 +351,10 @@ public class UH
     }
     #endregion
     #region Other methods
-    public static string HostUriToPascalConvention(string s)
+    public static string HostUriToPascalConvention(ILogger logger, string s)
     {
         // Uri must be checked always before passed into method. Then I would make same checks again and again
-        var uri = CreateUri(s);
+        var uri = CreateUri(logger, s);
         var result = SHReplace.ReplaceAll(uri.Host, " ", ".");
         result = CaseConverter.CamelCase.ConvertCase(result);
         var sb = new StringBuilder(result);
@@ -392,11 +393,11 @@ public class UH
         vr = Join(s.ToArray());
         return vr.Replace(":/", "://");
     }
-    public static bool Contains(Uri source, string hostnameEndsWith, string pathContaint, params string[] qsContainsAll)
+    public static bool Contains(ILogger logger, Uri source, string hostnameEndsWith, string pathContaint, params string[] qsContainsAll)
     {
         hostnameEndsWith = hostnameEndsWith.ToLower();
         pathContaint = pathContaint.ToLower();
-        var uri = CreateUri(source.ToString().ToLower());
+        var uri = CreateUri(logger, source.ToString().ToLower());
         if (uri.Host.EndsWith(hostnameEndsWith))
             if (GetFilePathAsHttpRequest(uri).Contains(pathContaint))
                 foreach (var item in qsContainsAll)
@@ -446,9 +447,9 @@ public class UH
     /// <summary>
     ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => lyrics.sunamo.cz
     /// </summary>
-    public static string GetHost(string s)
+    public static string GetHost(ILogger logger, string s)
     {
-        var u = CreateUri(AppendHttpIfNotExists(s));
+        var u = CreateUri(logger, AppendHttpIfNotExists(s));
         return u.Host;
     }
     /// <summary>
@@ -545,9 +546,9 @@ public class UH
     /// </summary>
     /// <param name="href"></param>
     /// <returns></returns>
-    public static bool IsUri(string href)
+    public static bool IsUri(ILogger logger, string href)
     {
-        var uri = CreateUri(href);
+        var uri = CreateUri(logger, href);
         return uri != null;
     }
     #endregion
