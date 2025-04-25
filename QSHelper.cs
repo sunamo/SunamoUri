@@ -121,7 +121,7 @@ public class QSHelper
         qs = qs.TrimStart('?');
 
         var parts = qs.Split(new[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries)
-            .ToList(); // SHSplit.SplitMore(qs, );
+            .ToList(); // SHSplit.Split(qs, );
 
         return DictionaryHelper.GetDictionaryByKeyValueInString(parts);
     }

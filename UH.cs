@@ -91,7 +91,7 @@ public class UH
     /// <returns></returns>
     public static string KeepOnlyHostAndProtocol(string v)
     {
-        var p = v.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.SplitMore(v, );
+        var p = v.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(v, );
         // se to tu už může dostat bez protokolu
         //if (p.Count != 2)
         //{
@@ -105,7 +105,7 @@ public class UH
     public static string GetToken(string href, int v)
     {
         var tokens = href.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries)
-            .ToList(); //SHSplit.SplitMore(href, "/");
+            .ToList(); //SHSplit.Split(href, "/");
         return tokens[tokens.Count + v];
     }
     #region Append
