@@ -67,7 +67,7 @@ internal class SH
     //    internal static Func<string, string, string, string> ReplaceOnce;
     //    internal static Func<string, char, string> RemoveAfterFirstChar;
     //    internal static Func<string, string, string> RemoveAfterFirst;
-    //    internal static Func<string, String[], List<string>> SplitMore;
+    //    internal static Func<string, String[], List<string>> Split;
     //    internal static Func<string, string, List<string>> Split;
     //    internal static Func<string, string, string[], string> ReplaceAll;
     //    internal static Func<string, string, string> TrimEnd;
