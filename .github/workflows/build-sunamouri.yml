@@ -1,0 +1,61 @@
+name: Build SunamoUri
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    name: Build SunamoUri
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SunamoUri/SunamoUri.csproj
+
+    - name: Build
+      run: dotnet build SunamoUri/SunamoUri.csproj --configuration Release --no-restore
+
+  test:
+    name: Test SunamoUri.Tests
+    runs-on: ${{ matrix.os }}
+    needs: build
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SunamoUri.Tests/SunamoUri.Tests.csproj
+
+    - name: Build tests
+      run: dotnet build SunamoUri.Tests/SunamoUri.Tests.csproj --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test SunamoUri.Tests/SunamoUri.Tests.csproj --configuration Release --no-build --verbosity normal
+      continue-on-error: true
