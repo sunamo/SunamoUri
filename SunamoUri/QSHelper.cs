@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoUri;
 
 /// <summary>
@@ -14,18 +17,18 @@ public class QSHelper
         var main = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var var in main)
         {
-            var v = var.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
-            if (v[0] == nameParam) return v[1];
+            var value = var.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            if (value[0] == nameParam) return value[1];
         }
 
         return null;
     }
 
-    public static string RemoveQs(string v)
+    public static string RemoveQs(string value)
     {
-        var x = v.IndexOf('?');
-        if (x != -1) return v.Substring(0, x);
-        return v;
+        var xValue = value.IndexOf('?');
+        if (xValue != -1) return value.Substring(0, xValue);
+        return value;
         //
     }
 
@@ -60,32 +63,32 @@ public class QSHelper
     /// <param name="p"></param>
     public static string GetQS(string adresa, params string[] p2)
     {
-        //var p = CA.TwoDimensionParamsIntoOne(p2);
-        var p = p2.ToList();
+        //var parameter = CA.TwoDimensionParamsIntoOne(p2);
+        var parameter = p2.ToList();
 
-        var sb = new StringBuilder();
-        sb.Append(adresa + "?");
-        var to = p.Count / 2 * 2;
-        for (var i = 0; i < p.Count; i++)
+        var stringBuilder = new StringBuilder();
+        stringBuilder.Append(adresa + "?");
+        var to = parameter.Count / 2 * 2;
+        for (var i = 0; i < parameter.Count; i++)
         {
             if (i == to) break;
 
-            var k = p[i];
-            var v = UH.UrlEncode(p[++i]);
-            sb.Append(k + "=" + v + "&");
+            var k = parameter[i];
+            var value = UH.UrlEncode(parameter[++i]);
+            stringBuilder.Append(k + "=" + value + "&");
         }
 
-        return sb.ToString().TrimEnd('&');
+        return stringBuilder.ToString().TrimEnd('&');
     }
 
     public static string GetQS(string adresa, Dictionary<string, string> p2)
     {
-        var sb = new StringBuilder();
-        sb.Append(adresa + "?");
+        var stringBuilder = new StringBuilder();
+        stringBuilder.Append(adresa + "?");
 
-        foreach (var item in p2) sb.Append(item.Key + "=" + item.Value + "&");
+        foreach (var item in p2) stringBuilder.Append(item.Key + "=" + item.Value + "&");
 
-        return sb.ToString().TrimEnd('&');
+        return stringBuilder.ToString().TrimEnd('&');
     }
 
     /// <summary>
@@ -116,7 +119,7 @@ public class QSHelper
     /// <returns></returns>
     public static Dictionary<string, string> ParseQs(string qs)
     {
-        var d = new Dictionary<string, string>();
+        var dictionary = new Dictionary<string, string>();
 
         qs = qs.TrimStart('?');
 
@@ -126,12 +129,12 @@ public class QSHelper
         return DictionaryHelper.GetDictionaryByKeyValueInString(parts);
     }
 
-    public static void GetArray(List<string> p, StringBuilder sb, bool uvo)
+    public static void GetArray(List<string> parameter, StringBuilder stringBuilder, bool uvo)
     {
-        sb.Append("new Array(");
-        //int to = (p.Length / 2) * 2;
-        var to = p.Count;
-        if (p.Count == 1) to = 1;
+        stringBuilder.Append("new Array(");
+        //int to = (parameter.Length / 2) * 2;
+        var to = parameter.Count;
+        if (parameter.Count == 1) to = 1;
 
         var to2 = to - 1;
         if (to2 == -1) to2 = 0;
@@ -139,19 +142,19 @@ public class QSHelper
         if (uvo)
             for (var i = 0; i < to; i++)
             {
-                var k = p[i];
-                sb.Append("\"" + k + "\"");
-                if (to2 != i) sb.Append(",");
+                var k = parameter[i];
+                stringBuilder.Append("\"" + k + "\"");
+                if (to2 != i) stringBuilder.Append(",");
             }
         else
             for (var i = 0; i < to; i++)
             {
-                var k = p[i];
-                sb.Append("su.ToString(" + k + ")");
-                if (to2 != i) sb.Append(",");
+                var k = parameter[i];
+                stringBuilder.Append("su.ToString(" + k + ")");
+                if (to2 != i) stringBuilder.Append(",");
             }
 
-        sb.Append(")");
+        stringBuilder.Append(")");
     }
 
     public static Dictionary<string, string> ParseQs(NameValueCollection qs)
@@ -161,9 +164,9 @@ public class QSHelper
         foreach (var item in qs)
         {
             var key = item.ToString();
-            var v = qs.Get(key);
+            var value = qs.Get(key);
 
-            dict.Add(key, v);
+            dict.Add(key, value);
         }
 
         return dict;

@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoUri._sunamo.SunamoString;
 
 internal class SH
@@ -26,15 +29,15 @@ internal class SH
         return newText.ToString();
     }
 
-    internal static string WhiteSpaceFromStart(string v)
+    internal static string WhiteSpaceFromStart(string value)
     {
-        var sb = new StringBuilder();
-        foreach (var item in v)
+        var stringBuilder = new StringBuilder();
+        foreach (var item in value)
             if (char.IsWhiteSpace(item))
-                sb.Append(item);
+                stringBuilder.Append(item);
             else
                 break;
-        return sb.ToString();
+        return stringBuilder.ToString();
     }
 
     internal static string PrefixIfNotStartedWith(string item, string http, bool skipWhitespaces = false)
