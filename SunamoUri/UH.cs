@@ -42,7 +42,7 @@ public class UH
     {
         value = value.ToLower();
         var stringBuilder = new StringBuilder(value);
-        sb[0] = char.ToUpper(sb[0]);
+        stringBuilder[0] = char.ToUpper(stringBuilder[0]);
         value = stringBuilder.ToString();
         if (value != Translate.FromKey(XlfKeys.Nope))
         {
@@ -361,7 +361,7 @@ public class UH
         var result = SHReplace.ReplaceAll(uri.Host, " ", ".");
         result = CaseConverter.CamelCase.ConvertCase(result);
         var stringBuilder = new StringBuilder(result);
-        sb[0] = char.ToUpper(sb[0]);
+        stringBuilder[0] = char.ToUpper(stringBuilder[0]);
         return stringBuilder.ToString();
     }
     private static string GetUriSafeString2(string title)
