@@ -1,6 +1,7 @@
+namespace SunamoUri._sunamo.SunamoExceptions;
+
 // EN: Variable names have been checked and replaced with self-descriptive names
 // CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-namespace SunamoUri._sunamo.SunamoExceptions;
 internal partial class ThrowEx
 {
     internal static bool ThrowIsNotNull<A, B>(Func<string, A, B, string?> f, A ex, B message)

@@ -1,6 +1,7 @@
+namespace SunamoUri._sunamo.SunamoDictionary;
+
 // EN: Variable names have been checked and replaced with self-descriptive names
 // CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-namespace SunamoUri._sunamo.SunamoDictionary;
 internal class DictionaryHelper
 {
     internal static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> p)
