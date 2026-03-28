@@ -1,43 +1,46 @@
 namespace SunamoUri;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// URI Helper class - additional methods (partial class part 3).
+/// </summary>
 public partial class UH
 {
     /// <summary>
-    ///     value parameter��pad� �e value A1 nebude protokol, ulo�� se do A2 ""
-    ///     value parameter��pad� �e tam protokol bude, ulo�� se do A2 value�etn� ://
+    /// Removes http:// or https:// prefix from the text, outputting the removed protocol.
+    /// If no protocol is present, protocol is set to empty string.
     /// </summary>
-    /// <param name = "t"></param>
-    /// <param name = "protocol"></param>
-    public static string RemovePrefixHttpOrHttps(string t, out string protocol)
+    /// <param name="text">The text to process.</param>
+    /// <param name="protocol">The removed protocol string including "://", or empty if none found.</param>
+    /// <returns>The text without the protocol prefix.</returns>
+    public static string RemovePrefixHttpOrHttps(string text, out string protocol)
     {
-        if (t.Contains("http://"))
+        if (text.Contains("http://"))
         {
             protocol = "http://";
-            t = t.Replace("http://", "");
-            return t;
+            text = text.Replace("http://", "");
+            return text;
         }
 
-        if (t.Contains("https://"))
+        if (text.Contains("https://"))
         {
             protocol = "https://";
-            t = t.Replace("https://", "");
-            return t;
+            text = text.Replace("https://", "");
+            return text;
         }
 
         protocol = "";
-        return t;
+        return text;
     }
 
     /// <summary>
-    ///     pass also for page:
+    /// Checks whether the text can be parsed as a valid URI.
     /// </summary>
-    /// <param name = "href"></param>
-    /// <returns></returns>
-    public static bool IsUri(ILogger logger, string href)
+    /// <param name="logger">The logger for error reporting.</param>
+    /// <param name="text">The text to validate as a URI.</param>
+    /// <returns>True if the text is a valid URI.</returns>
+    public static bool IsUri(ILogger logger, string text)
     {
-        var uri = CreateUri(logger, href);
+        var uri = CreateUri(logger, text);
         return uri != null;
     }
 }

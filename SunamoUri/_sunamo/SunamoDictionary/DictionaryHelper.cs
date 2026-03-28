@@ -1,16 +1,22 @@
 namespace SunamoUri._sunamo.SunamoDictionary;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// Provides helper methods for dictionary operations.
+/// </summary>
 internal class DictionaryHelper
 {
-    internal static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> p)
+    /// <summary>
+    /// Creates a dictionary from a list where alternating elements are keys and values.
+    /// </summary>
+    /// <typeparam name="T">The type of keys and values.</typeparam>
+    /// <param name="list">The list containing alternating key-value pairs.</param>
+    /// <returns>A dictionary constructed from the key-value pairs.</returns>
+    internal static Dictionary<T, T> GetDictionaryByKeyValueInString<T>(List<T> list) where T : notnull
     {
-        var methodName = Exceptions.CallingMethod();
-        ThrowEx.HasOddNumberOfElements("p", p);
+        ThrowEx.HasOddNumberOfElements("list", list);
 
         var result = new Dictionary<T, T>();
-        for (var i = 0; i < p.Count; i++) result.Add(p[i], p[++i]);
+        for (var i = 0; i < list.Count; i++) result.Add(list[i], list[++i]);
         return result;
     }
 }

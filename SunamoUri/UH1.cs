@@ -1,106 +1,114 @@
 namespace SunamoUri;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// URI Helper class - additional methods for URI manipulation (partial class part 2).
+/// </summary>
 public partial class UH
 {
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
-    ///     ?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon
-    ///     Vr�t� cel� QS value�etn� po��te�n�ho otazn�ku
+    /// Returns the complete query string including the leading question mark.
     /// </summary>
+    /// <param name="uri">The URI to extract the query from.</param>
+    /// <returns>The query string including the leading question mark.</returns>
     public static string GetQueryAsHttpRequest(Uri uri)
     {
         return uri.Query;
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => /Me/Login.aspx
+    /// Gets the page path from a URI without the query string.
     /// </summary>
+    /// <param name="uri">The URI to extract the page name from.</param>
+    /// <returns>The path and query without query string parameters.</returns>
     public static string GetPageNameFromUri(Uri uri)
     {
-        var nt = uri.PathAndQuery.IndexOf("?");
-        if (nt != -1)
-            return uri.PathAndQuery.Substring(0, nt);
+        var questionMarkIndex = uri.PathAndQuery.IndexOf('?');
+        if (questionMarkIndex != -1)
+            return uri.PathAndQuery.Substring(0, questionMarkIndex);
         return uri.PathAndQuery;
     }
 
-    ///// <summary>
-    ///// https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => GetPageNameFromUriTest: /Me/Login.aspx
-    /////
-    ///// Nonsense - Join A1,2 to return back A1
-    ///// </summary>
-    //public static string GetPageNameFromUri(string atr, string host)
-    //{
-    //    if (!atr.StartsWith("https://") && !atr.StartsWith("https://"))
-    //    {
-    //        return GetPageNameFromUri(new Uri("https://" + host + "/" + atr.TrimStart('/')));
-    //    }
-    //    return GetPageNameFromUri(new Uri(atr));
-    //}
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
-    ///     GetFileNameWithoutExtension: Login
-    ///     Pod�v� naprosto stejn� value�sledek jako UH.GetPageNameFromUri
+    /// Gets the local file path portion of the URI.
+    /// Returns the same result as GetPageNameFromUri.
     /// </summary>
-    /// <param name = "uri"></param>
+    /// <param name="uri">The URI to extract the path from.</param>
+    /// <returns>The local path of the URI.</returns>
     public static string GetFilePathAsHttpRequest(Uri uri)
     {
         return uri.LocalPath;
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
+    /// Gets the protocol string (scheme with "://") from a URI.
     /// </summary>
+    /// <param name="uri">The URI to extract the protocol from.</param>
+    /// <returns>The protocol string (e.g., "https://").</returns>
     public static string GetProtocolString(Uri uri)
     {
         return uri.Scheme + "://";
     }
 
     /// <summary>
-    ///     Vr�t� true pokud m� A1 protokol http nebo https
+    /// Returns true if the text has an http or https protocol prefix.
     /// </summary>
-    /// <param name = "p"></param>
-    public static bool HasHttpProtocol(string parameter)
+    /// <param name="text">The text to check.</param>
+    /// <returns>True if the text starts with http:// or https://.</returns>
+    public static bool HasHttpProtocol(string text)
     {
-        parameter = parameter.ToLower();
-        if (parameter.StartsWith("http://"))
+        text = text.ToLower();
+        if (text.StartsWith("http://"))
             return true;
-        if (parameter.StartsWith("https://"))
+        if (text.StartsWith("https://"))
             return true;
         return false;
     }
 
     /// <summary>
-    ///     create also for page:
+    /// Creates a Uri instance from a text string, logging an error if creation fails.
     /// </summary>
-    /// <param name = "s"></param>
-    /// <returns></returns>
-    public static Uri CreateUri(ILogger logger, string text)
+    /// <param name="logger">The logger for error reporting.</param>
+    /// <param name="text">The text to parse as a URI.</param>
+    /// <returns>The created Uri, or null if parsing fails.</returns>
+    public static Uri? CreateUri(ILogger logger, string text)
     {
         try
         {
             return new Uri(text);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogError("Can't construct url from " + text);
-            //ThrowEx.Custom(ex);
             return null;
         }
     }
 
-    public static string urlDecoded;
+    /// <summary>
+    /// Gets or sets the last URL-decoded result from IsUrlEncoded.
+    /// </summary>
+    public static string? UrlDecoded { get; set; }
+
+    /// <summary>
+    /// Checks whether a URI is URL-encoded.
+    /// The decoded result is stored in UrlDecoded.
+    /// </summary>
+    /// <param name="uri">The URI to check.</param>
+    /// <returns>True if the URI is URL-encoded.</returns>
     public static bool IsUrlEncoded(string uri)
     {
-        urlDecoded = UrlDecode(uri);
-        return urlDecoded != uri;
+        UrlDecoded = UrlDecode(uri);
+        return UrlDecoded != uri;
     }
 
+    /// <summary>
+    /// Converts a host URI to PascalCase convention.
+    /// </summary>
+    /// <param name="logger">The logger for error reporting.</param>
+    /// <param name="text">The URI text to convert.</param>
+    /// <returns>The host name in PascalCase.</returns>
     public static string HostUriToPascalConvention(ILogger logger, string text)
     {
-        // Uri must be checked always before passed into method. Then I would make same checks again and again
-        var uri = CreateUri(logger, text);
+        var uri = CreateUri(logger, text)!;
         var result = SHReplace.ReplaceAll(uri.Host, " ", ".");
         result = CaseConverter.CamelCase.ConvertCase(result);
         var stringBuilder = new StringBuilder(result);
@@ -108,49 +116,59 @@ public partial class UH
         return stringBuilder.ToString();
     }
 
+    /// <summary>
+    /// Converts a title to a URI-safe string, variant 2 with different ordering of operations.
+    /// </summary>
+    /// <param name="title">The title to convert.</param>
+    /// <returns>A URI-safe slug string.</returns>
     private static string GetUriSafeString2(string title)
     {
         if (string.IsNullOrEmpty(title))
             return "";
-        // remove entities
         title = Regex.Replace(title, @"&\w+;", "");
-        // remove anything that is not letters, numbers, dash, or space
         title = Regex.Replace(title, @"[^A-Za-z0-9\-\s]", "");
-        // remove any leading or trailing spaces left over
         title = title.Trim();
-        // replace spaces with single dash
         title = Regex.Replace(title, @"\s+", "-");
-        // if we end up with multiple dashes, collapse to single dash
         title = Regex.Replace(title, @"\-{2,}", "-");
-        // make it all lower case
         title = title.ToLower();
-        // if it's too long, clip it
         if (title.Length > 80)
             title = title.Substring(0, 79);
-        // remove trailing dash, if there is one
         if (title.EndsWith("-"))
             title = title.Substring(0, title.Length - 1);
         return title;
     }
 
-    public static string InsertBetweenPathAndFile(string uri, string vlozit)
+    /// <summary>
+    /// Inserts a text segment between the path and file name in a URI.
+    /// </summary>
+    /// <param name="uri">The URI to modify.</param>
+    /// <param name="textToInsert">The text segment to insert.</param>
+    /// <returns>The modified URI with the inserted segment.</returns>
+    public static string InsertBetweenPathAndFile(string uri, string textToInsert)
     {
-        var text = uri.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        text[text.Count - 2] += "/" + vlozit;
-        //Uri uri2 = new Uri(uri);
-        string vr = null;
-        vr = Join(text.ToArray());
-        return vr.Replace(":/", "://");
+        var segments = uri.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        segments[segments.Count - 2] += "/" + textToInsert;
+        var result = Join(segments.ToArray());
+        return result.Replace(":/", "://");
     }
 
-    public static bool Contains(ILogger logger, Uri source, string hostnameEndsWith, string pathContaint, params string[] qsContainsAll)
+    /// <summary>
+    /// Checks if a URI matches specified hostname, path, and query string conditions.
+    /// </summary>
+    /// <param name="logger">The logger for error reporting.</param>
+    /// <param name="source">The source URI to check.</param>
+    /// <param name="hostnameEndsWith">The expected hostname suffix.</param>
+    /// <param name="pathContains">The expected path substring.</param>
+    /// <param name="queryStringContainsAll">All query string values that must be present.</param>
+    /// <returns>True if all conditions match.</returns>
+    public static bool Contains(ILogger logger, Uri source, string hostnameEndsWith, string pathContains, params string[] queryStringContainsAll)
     {
         hostnameEndsWith = hostnameEndsWith.ToLower();
-        pathContaint = pathContaint.ToLower();
-        var uri = CreateUri(logger, source.ToString().ToLower());
+        pathContains = pathContains.ToLower();
+        var uri = CreateUri(logger, source.ToString().ToLower())!;
         if (uri.Host.EndsWith(hostnameEndsWith))
-            if (GetFilePathAsHttpRequest(uri).Contains(pathContaint))
-                foreach (var item in qsContainsAll)
+            if (GetFilePathAsHttpRequest(uri).Contains(pathContains))
+                foreach (var item in queryStringContainsAll)
                 {
                     if (!uri.Query.Contains(item))
                         return false;
@@ -160,122 +178,138 @@ public partial class UH
         return false;
     }
 
-    public static bool IsHttpDecoded(ref string input)
+    /// <summary>
+    /// Removes the tracking part (utm parameters) from a URL and returns only the domain with protocol.
+    /// </summary>
+    /// <param name="text">The URL to clean.</param>
+    /// <returns>The URL without tracking parameters.</returns>
+    public static string RemoveTrackingPart(string text)
     {
-        var decoded = WebUtility.UrlDecode(input);
-        if (true)
-        {
-        }
-
-        return false;
-    }
-
-    public static string RemoveTrackingPart(string value)
-    {
-        var result = SHParts.RemoveAfterFirst(value, "#utm_");
+        var result = SHParts.RemoveAfterFirst(text, "#utm_");
         result = RemovePrefixHttpOrHttps(result);
         result = SHParts.RemoveAfterFirstChar(result, '/');
-        if (result.Contains("."))
+        if (result.Contains('.'))
             return "https://" + result;
         return result;
-    //return value.Substring("#utm_source")
     }
 
     /// <summary>
-    ///     A2 can be * - then return true for any domain
+    /// Validates whether the text is a valid URI and its domain matches the expected domain.
     /// </summary>
-    /// <param name = "p"></param>
-    /// <param name = "domain"></param>
-    public static bool IsValidUriAndDomainIs(string parameter, string domain, out bool surelyDomain)
+    /// <param name="text">The text to validate as a URI.</param>
+    /// <param name="domain">The expected domain, or "*" to accept any domain.</param>
+    /// <param name="isSurelyDomain">Set to true if the URI was confirmed as a valid domain.</param>
+    /// <returns>True if the text is a valid URI with the expected domain.</returns>
+    public static bool IsValidUriAndDomainIs(string text, string domain, out bool isSurelyDomain)
     {
-        var p2 = AppendHttpIfNotExists(parameter);
-        Uri uri = null;
-        surelyDomain = false;
-        // Nema smysl hledat na přípony souborů, vrátil bych false pro to co by možná byla doména. Dnes už doména může být opravdu jakákoliv
-        if (Uri.TryCreate(p2, UriKind.Absolute, out uri))
+        var textWithHttp = AppendHttpIfNotExists(text);
+        isSurelyDomain = false;
+        if (Uri.TryCreate(textWithHttp, UriKind.Absolute, out var uri))
             if (uri.Host == domain || domain == "*")
                 return true;
         return false;
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => lyrics.sunamo.cz
+    /// Gets the host name from a URI text.
     /// </summary>
+    /// <param name="logger">The logger for error reporting.</param>
+    /// <param name="text">The URI text.</param>
+    /// <returns>The host name.</returns>
     public static string GetHost(ILogger logger, string text)
     {
-        var u = CreateUri(logger, AppendHttpIfNotExists(text));
-        return u.Host;
+        var uri = CreateUri(logger, AppendHttpIfNotExists(text))!;
+        return uri.Host;
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon =>
-    ///     https://lyrics.sunamo.cz/Me/
-    ///     Return by convetion with / on end
+    /// Gets the directory path from a URI (the path up to the last slash).
+    /// Returns the path with a trailing slash by convention.
     /// </summary>
-    /// <param name = "rp"></param>
-    public static string GetDirectoryName(string rp)
+    /// <param name="text">The URI to extract the directory from.</param>
+    /// <returns>The directory path with trailing slash.</returns>
+    public static string GetDirectoryName(string text)
     {
-        if (rp != "/")
-            rp = rp.TrimEnd('/');
-        rp = SHParts.RemoveAfterFirstChar(rp, '?');
-        var dex = rp.LastIndexOf('/');
-        if (dex != -1)
-            return rp.Substring(0, dex + 1);
-        return rp;
+        if (text != "/")
+            text = text.TrimEnd('/');
+        text = SHParts.RemoveAfterFirstChar(text, '?');
+        var lastSlashIndex = text.LastIndexOf('/');
+        if (lastSlashIndex != -1)
+            return text.Substring(0, lastSlashIndex + 1);
+        return text;
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login
+    /// Gets the file name without extension from a URI.
     /// </summary>
-    /// <param name = "p"></param>
-    public static string GetFileNameWithoutExtension(string parameter)
+    /// <param name="text">The URI to extract the file name from.</param>
+    /// <returns>The file name without its extension.</returns>
+    public static string GetFileNameWithoutExtension(string text)
     {
-        return Path.GetFileNameWithoutExtension(GetFileName(parameter));
+        return Path.GetFileNameWithoutExtension(GetFileName(text));
     }
 
-    /// <param name = "p"></param>
-    public static string Combine(bool dir, params string[] parameter)
+    /// <summary>
+    /// Combines URI segments with a slash separator, handling trailing slashes.
+    /// </summary>
+    /// <param name="isDirectory">Whether to append a trailing slash for directory paths.</param>
+    /// <param name="segments">The URI segments to combine.</param>
+    /// <returns>The combined URI.</returns>
+    public static string Combine(bool isDirectory, params string[] segments)
     {
-        var vr = string.Join('/', parameter).Replace("///", "/").Replace("//", "/").TrimEnd('/').Replace(":/", "://");
-        if (dir)
-            vr += "/";
-        return vr;
+        var result = string.Join('/', segments).Replace("///", "/").Replace("//", "/").TrimEnd('/').Replace(":/", "://");
+        if (isDirectory)
+            result += "/";
+        return result;
     }
 
-    private static string Join(params string[] text)
+    /// <summary>
+    /// Joins path segments with a slash separator.
+    /// </summary>
+    /// <param name="segments">The segments to join.</param>
+    /// <returns>The joined path.</returns>
+    private static string Join(params string[] segments)
     {
-        return string.Join('/', text);
+        return string.Join('/', segments);
     }
 
-    public static string Combine(params string[] parameter)
+    /// <summary>
+    /// Combines URI segments with automatic trailing slash handling.
+    /// </summary>
+    /// <param name="segments">The URI segments to combine.</param>
+    /// <returns>The combined URI.</returns>
+    public static string Combine(params string[] segments)
     {
-        return Combine(parameter.ToList());
+        return Combine(segments.ToList());
     }
 
-    /// <param name = "p"></param>
-    public static string Combine(IList<string> parameter)
+    /// <summary>
+    /// Combines a list of URI segments, adding trailing slashes to non-file segments.
+    /// </summary>
+    /// <param name="list">The list of URI segments to combine.</param>
+    /// <returns>The combined URI.</returns>
+    public static string Combine(IList<string> list)
     {
-        var vr = new StringBuilder();
-        var i = 0;
-        foreach (var item in parameter)
+        var result = new StringBuilder();
+        var index = 0;
+        foreach (var item in list)
         {
-            i++;
+            index++;
             if (string.IsNullOrWhiteSpace(item))
                 continue;
             if (item[item.Length - 1] == '/')
             {
-                vr.Append(item);
+                result.Append(item);
             }
             else
             {
-                if (i == parameter.Count && Path.GetExtension(item) != "")
-                    vr.Append(item);
+                if (index == list.Count && Path.GetExtension(item) != "")
+                    result.Append(item);
                 else
-                    vr.Append(item + '/');
+                    result.Append(item + '/');
             }
-        //vr.Append(item.TrimEnd('/') + "/");
         }
 
-        return vr.ToString();
+        return result.ToString();
     }
 }

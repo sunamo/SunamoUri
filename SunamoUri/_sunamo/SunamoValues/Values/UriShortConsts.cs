@@ -1,5 +1,8 @@
 namespace SunamoUri._sunamo.SunamoValues.Values;
 
+/// <summary>
+/// Contains short URI constants for Sunamo services.
+/// </summary>
 internal class UriShortConsts
 {
     internal const string DevCz = "dev.sunamo.net";
@@ -14,5 +17,8 @@ internal class UriShortConsts
     internal const string LyrCz = "lyr.sunamo.net";
 
     // miss acs
-    internal static List<string> All = CAGConsts.ToList(DevCz, LyrCz, AppCz, GeoCz, ErtCz, RpsCz, ShoCz, PhsCz);
+    /// <summary>
+    /// Gets or sets the list of all URI constants.
+    /// </summary>
+    internal static List<string> All { get; set; } = CAGConsts.ToList(DevCz, LyrCz, AppCz, GeoCz, ErtCz, RpsCz, ShoCz, PhsCz);
 }

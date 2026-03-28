@@ -1,18 +1,29 @@
 namespace SunamoUri;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// URI Helper class providing methods for URL manipulation, encoding, and parsing.
+/// </summary>
 public partial class UH
 {
-    public static string RemoveLastChar(string artist)
+    /// <summary>
+    /// Removes the last character from the text.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>The text without its last character.</returns>
+    public static string RemoveLastChar(string text)
     {
-        return artist.Substring(0, artist.Length - 1);
+        return text.Substring(0, text.Length - 1);
     }
 
-    public static string WhiteSpaceFromStart(string value)
+    /// <summary>
+    /// Extracts leading whitespace characters from the text.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>A string containing only the leading whitespace.</returns>
+    public static string WhiteSpaceFromStart(string text)
     {
         var stringBuilder = new StringBuilder();
-        foreach (var item in value)
+        foreach (var item in text)
             if (char.IsWhiteSpace(item))
                 stringBuilder.Append(item);
             else
@@ -20,38 +31,48 @@ public partial class UH
         return stringBuilder.ToString();
     }
 
+    /// <summary>
+    /// Removes the host and protocol from a URI, returning only the path.
+    /// </summary>
+    /// <param name="uri">The URI to process.</param>
+    /// <returns>The path portion of the URI.</returns>
     public static string RemoveHostAndProtocol(Uri uri)
     {
-        var parameter = RemovePrefixHttpOrHttps(uri.ToString());
-        var dex = parameter.IndexOf('/');
-        return parameter.Substring(dex);
-    }
-
-    public static string RemovePrefixHttpOrHttps(string t)
-    {
-        t = t.Replace("http://", "");
-        t = t.Replace("https://", "");
-        return t;
+        var textWithoutProtocol = RemovePrefixHttpOrHttps(uri.ToString());
+        var slashIndex = textWithoutProtocol.IndexOf('/');
+        return textWithoutProtocol.Substring(slashIndex);
     }
 
     /// <summary>
-    ///     first upper, other lower
+    /// Removes http:// or https:// prefix from the text.
     /// </summary>
-    /// <param name = "v"></param>
-    /// <returns></returns>
-    public static string DebugLocalhost(string value)
+    /// <param name="text">The text to process.</param>
+    /// <returns>The text without the HTTP/HTTPS prefix.</returns>
+    public static string RemovePrefixHttpOrHttps(string text)
     {
-        value = value.ToLower();
-        var stringBuilder = new StringBuilder(value);
+        text = text.Replace("http://", "");
+        text = text.Replace("https://", "");
+        return text;
+    }
+
+    /// <summary>
+    /// Converts the text to lowercase with the first character uppercased,
+    /// then resolves it against UriShortConsts to produce a debug localhost URL.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>The resolved debug URL.</returns>
+    public static string DebugLocalhost(string text)
+    {
+        text = text.ToLower();
+        var stringBuilder = new StringBuilder(text);
         stringBuilder[0] = char.ToUpper(stringBuilder[0]);
-        value = stringBuilder.ToString();
-        if (value != Translate.FromKey(XlfKeys.Nope))
+        text = stringBuilder.ToString();
+        if (text != Translate.FromKey(XlfKeys.Nope))
         {
-            List<FieldInfo> co = null;
-            co = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
-            var co2 = co.Where(data => data.Name.StartsWith(value)).First();
-            var vr = "https://" + co2.GetValue(null) + " / ";
-            return vr;
+            var fields = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly).ToList();
+            var matchingField = fields.Where(fieldInfo => fieldInfo.Name.StartsWith(text)).First();
+            var result = "https://" + matchingField.GetValue(null) + " / ";
+            return result;
         }
 
 #if !DEBUG
@@ -60,16 +81,27 @@ public partial class UH
         return "https://sunamo.net";
     }
 
-    public static bool IsWellFormedUriString(ref string uri, UriKind absolute)
+    /// <summary>
+    /// Checks if the URI is well-formed and trims it.
+    /// </summary>
+    /// <param name="uri">The URI to validate (modified in place).</param>
+    /// <param name="uriKind">The kind of URI to validate against.</param>
+    /// <returns>True if the URI is well-formed.</returns>
+    public static bool IsWellFormedUriString(ref string uri, UriKind uriKind)
     {
         uri = uri.Trim();
         uri = uri.TrimEnd(':');
-        var value = Uri.IsWellFormedUriString(uri, absolute);
-        if (value)
+        var isWellFormed = Uri.IsWellFormedUriString(uri, uriKind);
+        if (isWellFormed)
             uri = AppendHttpIfNotExists(uri);
-        return value;
+        return isWellFormed;
     }
 
+    /// <summary>
+    /// Gets the pathname from a URI by removing the protocol and host.
+    /// </summary>
+    /// <param name="uri">The URI to extract the path from.</param>
+    /// <returns>The pathname portion of the URI.</returns>
     public static string GetPathname(string uri)
     {
         uri = RemovePrefixHttpOrHttps(uri);
@@ -77,6 +109,11 @@ public partial class UH
         return uri;
     }
 
+    /// <summary>
+    /// Sanitizes a URI to keep only the host name without protocol, www prefix, or path.
+    /// </summary>
+    /// <param name="text">The URI to sanitize.</param>
+    /// <returns>The host name only.</returns>
     public static string SanitizeKeepOnlyHost(string text)
     {
         text = RemoveProtocol(text);
@@ -86,6 +123,11 @@ public partial class UH
         return text;
     }
 
+    /// <summary>
+    /// Removes the protocol (http: or https:) from the text.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>The text without the protocol.</returns>
     private static string RemoveProtocol(string text)
     {
         text = SH.ReplaceOnce(text, "http:", "");
@@ -94,199 +136,240 @@ public partial class UH
     }
 
     /// <summary>
-    ///     Remove also last slash and www.
+    /// Keeps only the host and protocol from a URI, removing the path, trailing slash, and www prefix.
     /// </summary>
-    /// <param name = "v"></param>
-    /// <returns></returns>
-    public static string KeepOnlyHostAndProtocol(string value)
+    /// <param name="text">The URI to process.</param>
+    /// <returns>The host with protocol only.</returns>
+    public static string KeepOnlyHostAndProtocol(string text)
     {
-        var parameter = value.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(value, );
-        // se to tu už může dostat bez protokolu
-        //if (parameter.Count != 2)
-        //{
-        //    throw new Exception("Wrong count of parts");
-        //}
-        var dx = 0;
-        if (parameter.Count == 2)
-            dx = 1;
-        parameter[dx] = SHParts.RemoveAfterFirstChar(parameter[dx], '/');
-        return SHTrim.TrimStart(string.Join("//", parameter).TrimEnd('/'), "www.");
+        var parts = text.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        var index = 0;
+        if (parts.Count == 2)
+            index = 1;
+        parts[index] = SHParts.RemoveAfterFirstChar(parts[index], '/');
+        return SHTrim.TrimStart(string.Join("//", parts).TrimEnd('/'), "www.");
     }
 
-    public static string GetToken(string href, int value)
+    /// <summary>
+    /// Gets a path segment from a URI at the specified offset from the end.
+    /// </summary>
+    /// <param name="text">The URI to process.</param>
+    /// <param name="offset">The negative offset from the end of the segments.</param>
+    /// <returns>The path segment at the specified offset.</returns>
+    public static string GetToken(string text, int offset)
     {
-        var tokens = href.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries).ToList(); //SHSplit.Split(href, "/");
-        return tokens[tokens.Count + value];
+        var parts = text.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        return parts[parts.Count + offset];
     }
 
-    public static string AppendHttpsIfNotExists(string parameter)
+    /// <summary>
+    /// Prepends https:// to the text if it does not already start with https.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>The text with https:// prefix.</returns>
+    public static string AppendHttpsIfNotExists(string text)
     {
-        var p2 = parameter;
-        if (!parameter.StartsWith("https"))
-            p2 = "https://" + parameter;
-        return p2;
+        var result = text;
+        if (!text.StartsWith("https"))
+            result = "https://" + text;
+        return result;
     }
 
-    public static string AppendHttpIfNotExists(string parameter)
+    /// <summary>
+    /// Prepends http:// to the text if it does not already start with http.
+    /// </summary>
+    /// <param name="text">The text to process.</param>
+    /// <returns>The text with http:// prefix.</returns>
+    public static string AppendHttpIfNotExists(string text)
     {
-        var p2 = parameter;
-        if (!parameter.StartsWith("http"))
-            p2 = "http://" + parameter;
-        return p2;
+        var result = text;
+        if (!text.StartsWith("http"))
+            result = "http://" + text;
+        return result;
     }
 
+    /// <summary>
+    /// Converts a title string to a URI-safe slug with a maximum length of 80 characters.
+    /// </summary>
+    /// <param name="title">The title to convert.</param>
+    /// <returns>A URI-safe slug string.</returns>
     public static string GetUriSafeString(string title)
     {
         if (string.IsNullOrEmpty(title))
             return "";
         title = SH.AddBeforeUpperChars(title, '-', false);
         title = title.RemoveDiacritics();
-        // replace spaces with single dash
         title = Regex.Replace(title, @"\s+", "-");
-        // if we end up with multiple dashes, collapse to single dash
         title = Regex.Replace(title, @"\-{2,}", "-");
-        // make it all lower case
         title = title.ToLower();
-        // remove entities
         title = Regex.Replace(title, @"&\w+;", "");
-        // remove anything that is not letters, numbers, dash, or space
         title = Regex.Replace(title, @"[^a-z0-9\-\s]", "");
-        // replace spaces
         title = title.Replace(' ', '-');
-        // collapse dashes
         title = Regex.Replace(title, @"-{2,}", "-");
-        // trim excessive dashes at the beginning
         title = title.TrimStart(new[] { '-' });
-        // if it's too long, clip it
         if (title.Length > 80)
             title = title.Substring(0, 79);
-        // remove trailing dashes
         title = title.TrimEnd(new[] { '-' });
         return title;
     }
 
+    /// <summary>
+    /// Ensures the host URL starts with https:// and ends with /.
+    /// </summary>
+    /// <param name="hostApp">The host application URL.</param>
     public static void BeforeCombine(ref string hostApp)
     {
         hostApp = SH.PrefixIfNotStartedWith(hostApp, "https://");
         hostApp = SH.PostfixIfNotEmpty(hostApp, "/");
     }
 
-    public static string GetUriSafeString(string title, int maxLenght)
+    /// <summary>
+    /// Converts a title string to a URI-safe slug with a specified maximum length.
+    /// </summary>
+    /// <param name="title">The title to convert.</param>
+    /// <param name="maxLength">The maximum length of the resulting slug.</param>
+    /// <returns>A URI-safe slug string.</returns>
+    public static string GetUriSafeString(string title, int maxLength)
     {
         if (string.IsNullOrEmpty(title))
             return "";
         title = title.RemoveDiacritics();
-        // replace spaces with single dash
         title = Regex.Replace(title, @"\s+", "-");
-        // if we end up with multiple dashes, collapse to single dash
         title = Regex.Replace(title, @"\-{2,}", "-");
-        // make it all lower case
         title = title.ToLower();
-        // remove entities
         title = Regex.Replace(title, @"&\w+;", "");
-        // remove anything that is not letters, numbers, dash, or space
         title = Regex.Replace(title, @"[^a-z0-9\-\s]", "");
-        // replace spaces
         title = title.Replace(' ', '-');
-        // collapse dashes
         title = Regex.Replace(title, @"-{2,}", "-");
-        // trim excessive dashes at the beginning
         title = title.TrimStart(new[] { '-' });
-        // remove trailing dashes
         title = title.TrimEnd(new[] { '-' });
         title = SHReplace.ReplaceAll(title, "-", "--");
-        // if it's too long, clip it
-        if (title.Length > maxLenght)
-            title = title.Substring(0, maxLenght);
+        if (title.Length > maxLength)
+            title = title.Substring(0, maxLength);
         return title;
     }
 
+    /// <summary>
+    /// Converts a tag name to a URI-safe slug, ensuring uniqueness by appending a number if needed.
+    /// </summary>
+    /// <param name="tagName">The tag name to convert.</param>
+    /// <param name="maxLength">The maximum length of the resulting slug.</param>
+    /// <param name="methodInWebExists">A function that checks whether the slug already exists.</param>
+    /// <returns>A unique URI-safe slug string.</returns>
     public static string GetUriSafeString(string tagName, int maxLength, Func<string, bool> methodInWebExists)
     {
         var uri = GetUriSafeString(tagName, maxLength);
-        var pripocist = 1;
+        var increment = 1;
         while (methodInWebExists.Invoke(uri))
-            if (uri.Length + pripocist.ToString().Length >= maxLength)
+            if (uri.Length + increment.ToString().Length >= maxLength)
             {
-                tagName = tagName.Substring(0, tagName.Length - 1); //SH.RemoveLastChar(tagName);
+                tagName = tagName.Substring(0, tagName.Length - 1);
             }
             else
             {
-                var prip = pripocist.ToString();
-                if (pripocist == 1)
-                    prip = "";
-                uri = GetUriSafeString(tagName + prip, maxLength);
-                pripocist++;
+                var incrementText = increment.ToString();
+                if (increment == 1)
+                    incrementText = "";
+                uri = GetUriSafeString(tagName + incrementText, maxLength);
+                increment++;
             }
 
         return uri;
     }
 
-    public static string UrlDecodeWithRemovePathSeparatorCharacter(string pridat)
+    /// <summary>
+    /// URL-decodes the text and removes path separator characters.
+    /// </summary>
+    /// <param name="text">The URL-encoded text to decode and clean.</param>
+    /// <returns>The decoded and cleaned text.</returns>
+    public static string UrlDecodeWithRemovePathSeparatorCharacter(string text)
     {
-        pridat = WebUtility.UrlDecode(pridat);
-        //%22 = \
-        pridat = SHReplace.ReplaceAll(pridat, "", "%22", "%5c");
-        return pridat;
+        text = WebUtility.UrlDecode(text);
+        text = SHReplace.ReplaceAll(text, "", "%22", "%5c");
+        return text;
     }
 
-    public static string ChangeExtension(string attrA, string oldExt, string extL)
+    /// <summary>
+    /// Changes the extension of a URI path.
+    /// </summary>
+    /// <param name="text">The URI path to modify.</param>
+    /// <param name="oldExtension">The current extension to remove.</param>
+    /// <param name="newExtension">The new extension to append.</param>
+    /// <returns>The URI path with the changed extension.</returns>
+    public static string ChangeExtension(string text, string oldExtension, string newExtension)
     {
-        attrA = SHTrim.TrimEnd(attrA, oldExt);
-        return attrA + extL;
+        text = SHTrim.TrimEnd(text, oldExtension);
+        return text + newExtension;
     }
 
-    public static string CombineTrimEndSlash(params string[] parameter)
+    /// <summary>
+    /// Combines URI segments, trimming trailing slashes from each segment.
+    /// </summary>
+    /// <param name="segments">The URI segments to combine.</param>
+    /// <returns>The combined URI without a trailing slash.</returns>
+    public static string CombineTrimEndSlash(params string[] segments)
     {
-        var vr = new StringBuilder();
-        foreach (var item in parameter)
+        var result = new StringBuilder();
+        foreach (var item in segments)
         {
             if (string.IsNullOrWhiteSpace(item))
                 continue;
             if (item[item.Length - 1] == '/')
-                vr.Append(item.TrimStart('/'));
+                result.Append(item.TrimStart('/'));
             else
-                vr.Append(item.TrimStart('/') + '/');
-        //vr.Append(item.TrimEnd('/') + "/");
+                result.Append(item.TrimStart('/') + '/');
         }
 
-        return vr.ToString().TrimEnd('/');
-    }
-
-    public static string UrlEncode(string co)
-    {
-        return WebUtility.UrlEncode(co.Trim());
-    }
-
-    public static string UrlDecode(string co)
-    {
-        return WebUtility.UrlDecode(co.Trim());
+        return result.ToString().TrimEnd('/');
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => Login.aspx
+    /// URL-encodes the text after trimming whitespace.
     /// </summary>
-    /// <param name = "rp"></param>
-    public static string GetFileName(string rp, bool wholeUrl = false)
+    /// <param name="text">The text to encode.</param>
+    /// <returns>The URL-encoded text.</returns>
+    public static string UrlEncode(string text)
     {
-        if (wholeUrl)
+        return WebUtility.UrlEncode(text.Trim());
+    }
+
+    /// <summary>
+    /// URL-decodes the text after trimming whitespace.
+    /// </summary>
+    /// <param name="text">The text to decode.</param>
+    /// <returns>The URL-decoded text.</returns>
+    public static string UrlDecode(string text)
+    {
+        return WebUtility.UrlDecode(text.Trim());
+    }
+
+    /// <summary>
+    /// Gets the file name from a URI, optionally returning the full URL without query string.
+    /// </summary>
+    /// <param name="text">The URI to extract the file name from.</param>
+    /// <param name="isReturningWholeUrl">If true, returns the full URL without query string instead of just the file name.</param>
+    /// <returns>The file name or full URL without query string.</returns>
+    public static string GetFileName(string text, bool isReturningWholeUrl = false)
+    {
+        if (isReturningWholeUrl)
         {
-            var data = SHParts.RemoveAfterFirst(rp, "?");
-            //var result = FS.ReplaceInvalidFileNameChars(data, []);
+            var data = SHParts.RemoveAfterFirst(text, "?");
             return data;
         }
 
-        rp = SHParts.RemoveAfterFirst(rp, "?");
-        rp = rp.TrimEnd('/');
-        var dex = rp.LastIndexOf('/');
-        return rp.Substring(dex + 1);
+        text = SHParts.RemoveAfterFirst(text, "?");
+        text = text.TrimEnd('/');
+        var lastSlashIndex = text.LastIndexOf('/');
+        return text.Substring(lastSlashIndex + 1);
     }
 
     /// <summary>
-    ///     https://lyrics.sunamo.cz/Me/Login.aspx?ReturnUrl=https://lyrics.sunamo.cz/Artist/walk-the-moon => ""
+    /// Gets the file extension from a URI.
     /// </summary>
-    public static string GetExtension(string image)
+    /// <param name="text">The URI to extract the extension from.</param>
+    /// <returns>The file extension including the leading dot.</returns>
+    public static string GetExtension(string text)
     {
-        return Path.GetExtension(image);
+        return Path.GetExtension(text);
     }
 }

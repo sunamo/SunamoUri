@@ -1,13 +1,30 @@
 namespace SunamoUri._sunamo.SunamoString;
 
+/// <summary>
+/// Provides general string utility methods.
+/// </summary>
 internal class SH
 {
-    internal static string ReplaceOnce(string input, string what, string zaco)
+    /// <summary>
+    /// Replaces only the first occurrence of the specified pattern.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <param name="what">The pattern to find.</param>
+    /// <param name="replacement">The replacement string.</param>
+    /// <returns>The text with the first occurrence replaced.</returns>
+    internal static string ReplaceOnce(string text, string what, string replacement)
     {
-        return new Regex(what).Replace(input, zaco, 1);
+        return new Regex(what).Replace(text, replacement, 1);
     }
 
-    internal static string AddBeforeUpperChars(string text, char add, bool preserveAcronyms)
+    /// <summary>
+    /// Inserts a character before each uppercase letter in the text.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <param name="add">The character to insert.</param>
+    /// <param name="isPreservingAcronyms">Whether to preserve consecutive uppercase letters as acronyms.</param>
+    /// <returns>The text with characters inserted before uppercase letters.</returns>
+    internal static string AddBeforeUpperChars(string text, char add, bool isPreservingAcronyms)
     {
         if (string.IsNullOrWhiteSpace(text))
             return string.Empty;
@@ -17,7 +34,7 @@ internal class SH
         {
             if (char.IsUpper(text[i]))
                 if ((text[i - 1] != add && !char.IsUpper(text[i - 1])) ||
-                    (preserveAcronyms && char.IsUpper(text[i - 1]) &&
+                    (isPreservingAcronyms && char.IsUpper(text[i - 1]) &&
                      i < text.Length - 1 && !char.IsUpper(text[i + 1])))
                     newText.Append(add);
             newText.Append(text[i]);
@@ -26,10 +43,15 @@ internal class SH
         return newText.ToString();
     }
 
-    internal static string WhiteSpaceFromStart(string value)
+    /// <summary>
+    /// Extracts leading whitespace characters from the text.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <returns>A string containing only the leading whitespace.</returns>
+    internal static string WhiteSpaceFromStart(string text)
     {
         var stringBuilder = new StringBuilder();
-        foreach (var item in value)
+        foreach (var item in text)
             if (char.IsWhiteSpace(item))
                 stringBuilder.Append(item);
             else
@@ -37,21 +59,34 @@ internal class SH
         return stringBuilder.ToString();
     }
 
-    internal static string PrefixIfNotStartedWith(string item, string http, bool skipWhitespaces = false)
+    /// <summary>
+    /// Adds a prefix to the text if it does not already start with it.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <param name="prefix">The prefix to add.</param>
+    /// <param name="isSkippingWhitespaces">Whether to skip leading whitespace before checking.</param>
+    /// <returns>The text with the prefix added if not already present.</returns>
+    internal static string PrefixIfNotStartedWith(string text, string prefix, bool isSkippingWhitespaces = false)
     {
         var whitespaces = string.Empty;
 
-        if (skipWhitespaces)
+        if (isSkippingWhitespaces)
         {
-            whitespaces = WhiteSpaceFromStart(item);
-            item = item.Substring(whitespaces.Length);
+            whitespaces = WhiteSpaceFromStart(text);
+            text = text.Substring(whitespaces.Length);
         }
 
-        if (!item.StartsWith(http)) return whitespaces + http + item;
+        if (!text.StartsWith(prefix)) return whitespaces + prefix + text;
 
-        return whitespaces + item;
+        return whitespaces + text;
     }
 
+    /// <summary>
+    /// Adds a postfix to the text if the text is not empty and does not already end with it.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <param name="postfix">The postfix to add.</param>
+    /// <returns>The text with the postfix added if applicable.</returns>
     internal static string PostfixIfNotEmpty(string text, string postfix)
     {
         if (text.Length != 0)
@@ -59,27 +94,4 @@ internal class SH
                 return text + postfix;
         return text;
     }
-
-    //    internal static Func<string, string, string> PostfixIfNotEmpty;
-    //    internal static Func<string, string> FirstCharUpper;
-    //    internal static Func<string, string, bool, string> KeepAfterFirst;
-    //    internal static Func<string, string> TextWithoutDiacritic;
-    //    internal static Func<string, string, string, string> ReplaceOnce;
-    //    internal static Func<string, char, string> RemoveAfterFirstChar;
-    //    internal static Func<string, string, string> RemoveAfterFirst;
-    //    internal static Func<string, String[], List<string>> Split;
-    //    internal static Func<string, string, List<string>> Split;
-    //    internal static Func<string, string, string[], string> ReplaceAll;
-    //    internal static Func<string, string, string> TrimEnd;
-    //    internal static Func<string, char, bool, string> AddBeforeUpperChars;
-    //    internal static Func<string, int, int, SubstringArgs, string> Substring;
-    //    internal static Func<string, char, List<string>> SplitChar;
-    //    internal static Func<string, string, bool, string> PrefixIfNotStartedWith;
-    //    internal static Func<string, string, string> TrimStart;
-    //    internal static Func<string, string> RemoveLastChar;
-
-
-
-
-
 }

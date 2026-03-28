@@ -1,15 +1,22 @@
 namespace SunamoUri._sunamo.SunamoArgs;
 
 /// <summary>
-///     23-1-23 jsem ho přesunul zpět do SunamoStringSubstring, aby neměl už žádné deps
+/// Configuration arguments for substring operations.
 /// </summary>
 internal class SubstringArgs
 {
-    internal static SubstringArgs Instance = new();
-    internal bool returnInputIfIndexFromIsLessThanIndexTo = false;
+    /// <summary>
+    /// Gets or sets the singleton instance with default settings.
+    /// </summary>
+    internal static SubstringArgs Instance { get; set; } = new();
 
     /// <summary>
-    ///     Was before created this class
+    /// Gets or sets whether to return the original input when indexFrom exceeds indexTo.
     /// </summary>
-    internal bool returnInputIfInputIsShorterThanA3 = false;
+    internal bool ShouldReturnInputWhenIndexFromExceedsIndexTo { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets whether to return the original input when it is shorter than the specified indexTo.
+    /// </summary>
+    internal bool ShouldReturnInputWhenShorterThanIndexTo { get; set; } = false;
 }

@@ -1,171 +1,193 @@
 namespace SunamoUri;
 
 /// <summary>
-///     Summary description for QSHelper
+/// Query string helper methods for parsing and manipulating URL query strings.
 /// </summary>
 public class QSHelper
 {
     /// <summary>
-    ///     GetParameter = return null when not found
-    ///     GetParameterSE = return string.Empty when not found
+    /// Gets a parameter value from a URI query string.
+    /// Returns null when not found. Use GetParameterSE for empty string fallback.
     /// </summary>
-    public static string GetParameter(string uri, string nameParam)
+    /// <param name="uri">The URI containing the query string.</param>
+    /// <param name="parameterName">The name of the parameter to find.</param>
+    /// <returns>The parameter value, or null if not found.</returns>
+    public static string? GetParameter(string uri, string parameterName)
     {
-        var main = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var var in main)
+        var parts = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var item in parts)
         {
-            var value = var.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
-            if (value[0] == nameParam) return value[1];
+            var pair = item.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            if (pair[0] == parameterName) return pair[1];
         }
 
         return null;
     }
 
-    public static string RemoveQs(string value)
+    /// <summary>
+    /// Removes the query string from a URI.
+    /// </summary>
+    /// <param name="text">The URI to process.</param>
+    /// <returns>The URI without the query string.</returns>
+    public static string RemoveQs(string text)
     {
-        var xValue = value.IndexOf('?');
-        if (xValue != -1) return value.Substring(0, xValue);
-        return value;
-        //
+        var questionMarkIndex = text.IndexOf('?');
+        if (questionMarkIndex != -1) return text.Substring(0, questionMarkIndex);
+        return text;
     }
 
     /// <summary>
-    ///     get value of A2 parametr in A1
-    ///     GetParameter = return null when not found
-    ///     GetParameterSE = return string.Empty when not found
+    /// Gets a parameter value from a URI query string.
+    /// Returns empty string when not found. Use GetParameter for null fallback.
     /// </summary>
-    /// <param name="uri"></param>
-    /// <param name="nameParam"></param>
-    public static string GetParameterSE(string uri, string nameParam)
+    /// <param name="uri">The URI containing the query string.</param>
+    /// <param name="parameterName">The name of the parameter to find.</param>
+    /// <returns>The parameter value, or empty string if not found.</returns>
+    public static string GetParameterSE(string uri, string parameterName)
     {
-        nameParam = nameParam + "=";
-        var dexPocatek = uri.IndexOf(nameParam);
-        if (dexPocatek != -1)
+        parameterName = parameterName + "=";
+        var startIndex = uri.IndexOf(parameterName);
+        if (startIndex != -1)
         {
-            var dexKonec = uri.IndexOf("&", dexPocatek);
-            dexPocatek = dexPocatek + nameParam.Length;
-            if (dexKonec != -1) return SHSubstring.Substring(uri, dexPocatek, dexKonec);
+            var endIndex = uri.IndexOf("&", startIndex);
+            startIndex = startIndex + parameterName.Length;
+            if (endIndex != -1) return SHSubstring.Substring(uri, startIndex, endIndex) ?? "";
 
-            return uri.Substring(dexPocatek);
+            return uri.Substring(startIndex);
         }
 
         return "";
     }
 
     /// <summary>
-    ///     A1 je adresa bez konzového otazníku
-    ///     Všechny parametry automaticky zakóduje metodou UH.UrlEncode
+    /// Builds a query string URL from a base address and alternating key-value parameter pairs.
+    /// All parameter values are automatically URL-encoded.
     /// </summary>
-    /// <param name="adresa"></param>
-    /// <param name="p"></param>
-    public static string GetQS(string adresa, params string[] p2)
+    /// <param name="baseUrl">The base URL without a trailing question mark.</param>
+    /// <param name="parameters">Alternating key-value pairs for the query string.</param>
+    /// <returns>The complete URL with query string.</returns>
+    public static string GetQS(string baseUrl, params string[] parameters)
     {
-        //var parameter = CA.TwoDimensionParamsIntoOne(p2);
-        var parameter = p2.ToList();
+        var list = parameters.ToList();
 
         var stringBuilder = new StringBuilder();
-        stringBuilder.Append(adresa + "?");
-        var to = parameter.Count / 2 * 2;
-        for (var i = 0; i < parameter.Count; i++)
+        stringBuilder.Append(baseUrl + "?");
+        var pairCount = list.Count / 2 * 2;
+        for (var i = 0; i < list.Count; i++)
         {
-            if (i == to) break;
+            if (i == pairCount) break;
 
-            var k = parameter[i];
-            var value = UH.UrlEncode(parameter[++i]);
-            stringBuilder.Append(k + "=" + value + "&");
+            var key = list[i];
+            var value = UH.UrlEncode(list[++i]);
+            stringBuilder.Append(key + "=" + value + "&");
         }
 
         return stringBuilder.ToString().TrimEnd('&');
     }
 
-    public static string GetQS(string adresa, Dictionary<string, string> p2)
+    /// <summary>
+    /// Builds a query string URL from a base address and a dictionary of parameters.
+    /// </summary>
+    /// <param name="baseUrl">The base URL without a trailing question mark.</param>
+    /// <param name="parameters">Dictionary of parameter key-value pairs.</param>
+    /// <returns>The complete URL with query string.</returns>
+    public static string GetQS(string baseUrl, Dictionary<string, string> parameters)
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.Append(adresa + "?");
+        stringBuilder.Append(baseUrl + "?");
 
-        foreach (var item in p2) stringBuilder.Append(item.Key + "=" + item.Value + "&");
+        foreach (var item in parameters) stringBuilder.Append(item.Key + "=" + item.Value + "&");
 
         return stringBuilder.ToString().TrimEnd('&');
     }
 
     /// <summary>
-    ///     Do A1 se zadává Request.Url.Query.Substring(1) neboli třeba pid=1&amp;aid=10
+    /// Normalizes a query string by sorting parameters alphabetically.
+    /// Returns null for tracking-related query strings (contextkey, guid, SelectingPhotos).
     /// </summary>
-    /// <param name="args"></param>
-    public static string GetNormalizeQS(string args)
+    /// <param name="text">The query string to normalize (without leading question mark).</param>
+    /// <returns>The normalized query string, or null for tracking requests.</returns>
+    public static string? GetNormalizeQS(string text)
     {
-        if (args.Length != 0)
+        if (text.Length != 0)
         {
-            if (args.Contains("contextkey=") || args.Contains("guid=") || args.Contains("SelectingPhotos="))
-                // Pouze uploaduji fotky pomocí AjaxControlToolkit, ¨přece nebudu každé odeslání fotky ukládat do DB
+            if (text.Contains("contextkey=") || text.Contains("guid=") || text.Contains("SelectingPhotos="))
                 return null;
 
-            //args = args.Substring(1);
-            var splited = new List<string>(args.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries));
-            splited.Sort();
-            args = string.Join('&', splited.ToArray());
+            var parts = new List<string>(text.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries));
+            parts.Sort();
+            text = string.Join('&', parts.ToArray());
         }
 
-        return args;
+        return text;
     }
 
     /// <summary>
-    ///     Must get just qs without uri => use UH.GetQueryAsHttpRequest before
+    /// Parses a query string into a dictionary of key-value pairs.
+    /// Must receive just the query string without URI path. Use UH.GetQueryAsHttpRequest before calling.
     /// </summary>
-    /// <param name="qs"></param>
-    /// <returns></returns>
-    public static Dictionary<string, string> ParseQs(string qs)
+    /// <param name="queryString">The query string to parse.</param>
+    /// <returns>A dictionary of parameter names and values.</returns>
+    public static Dictionary<string, string> ParseQs(string queryString)
     {
-        var dictionary = new Dictionary<string, string>();
+        queryString = queryString.TrimStart('?');
 
-        qs = qs.TrimStart('?');
-
-        var parts = qs.Split(new[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries)
-            .ToList(); // SHSplit.Split(qs, );
+        var parts = queryString.Split(new[] { "&", "=" }, StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
 
         return DictionaryHelper.GetDictionaryByKeyValueInString(parts);
     }
 
-    public static void GetArray(List<string> parameter, StringBuilder stringBuilder, bool uvo)
+    /// <summary>
+    /// Serializes a list of parameters into a JavaScript Array constructor call.
+    /// </summary>
+    /// <param name="list">The list of parameters to serialize.</param>
+    /// <param name="stringBuilder">The StringBuilder to append to.</param>
+    /// <param name="isQuoted">Whether to wrap values in double quotes.</param>
+    public static void GetArray(List<string> list, StringBuilder stringBuilder, bool isQuoted)
     {
         stringBuilder.Append("new Array(");
-        //int to = (parameter.Length / 2) * 2;
-        var to = parameter.Count;
-        if (parameter.Count == 1) to = 1;
+        var count = list.Count;
+        if (list.Count == 1) count = 1;
 
-        var to2 = to - 1;
-        if (to2 == -1) to2 = 0;
+        var lastIndex = count - 1;
+        if (lastIndex == -1) lastIndex = 0;
 
-        if (uvo)
-            for (var i = 0; i < to; i++)
+        if (isQuoted)
+            for (var i = 0; i < count; i++)
             {
-                var k = parameter[i];
-                stringBuilder.Append("\"" + k + "\"");
-                if (to2 != i) stringBuilder.Append(",");
+                var element = list[i];
+                stringBuilder.Append("\"" + element + "\"");
+                if (lastIndex != i) stringBuilder.Append(",");
             }
         else
-            for (var i = 0; i < to; i++)
+            for (var i = 0; i < count; i++)
             {
-                var k = parameter[i];
-                stringBuilder.Append("su.ToString(" + k + ")");
-                if (to2 != i) stringBuilder.Append(",");
+                var element = list[i];
+                stringBuilder.Append("su.ToString(" + element + ")");
+                if (lastIndex != i) stringBuilder.Append(",");
             }
 
         stringBuilder.Append(")");
     }
 
-    public static Dictionary<string, string> ParseQs(NameValueCollection qs)
+    /// <summary>
+    /// Parses a NameValueCollection into a dictionary.
+    /// </summary>
+    /// <param name="nameValueCollection">The NameValueCollection to parse.</param>
+    /// <returns>A dictionary of keys and values.</returns>
+    public static Dictionary<string, string> ParseQs(NameValueCollection nameValueCollection)
     {
-        var dict = new Dictionary<string, string>();
+        var dictionary = new Dictionary<string, string>();
 
-        foreach (var item in qs)
+        foreach (var item in nameValueCollection)
         {
-            var key = item.ToString();
-            var value = qs.Get(key);
+            var key = item?.ToString() ?? string.Empty;
+            var value = nameValueCollection.Get(key) ?? string.Empty;
 
-            dict.Add(key, value);
+            dictionary.Add(key, value);
         }
 
-        return dict;
+        return dictionary;
     }
 }
