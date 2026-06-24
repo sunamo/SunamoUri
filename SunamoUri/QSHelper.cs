@@ -1,17 +1,7 @@
 namespace SunamoUri;
 
-/// <summary>
-/// Query string helper methods for parsing and manipulating URL query strings.
-/// </summary>
 public class QSHelper
 {
-    /// <summary>
-    /// Gets a parameter value from a URI query string.
-    /// Returns null when not found. Use GetParameterSE for empty string fallback.
-    /// </summary>
-    /// <param name="uri">The URI containing the query string.</param>
-    /// <param name="parameterName">The name of the parameter to find.</param>
-    /// <returns>The parameter value, or null if not found.</returns>
     public static string? GetParameter(string uri, string parameterName)
     {
         var parts = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
@@ -24,11 +14,6 @@ public class QSHelper
         return null;
     }
 
-    /// <summary>
-    /// Removes the query string from a URI.
-    /// </summary>
-    /// <param name="text">The URI to process.</param>
-    /// <returns>The URI without the query string.</returns>
     public static string RemoveQs(string text)
     {
         var questionMarkIndex = text.IndexOf('?');
@@ -36,13 +21,6 @@ public class QSHelper
         return text;
     }
 
-    /// <summary>
-    /// Gets a parameter value from a URI query string.
-    /// Returns empty string when not found. Use GetParameter for null fallback.
-    /// </summary>
-    /// <param name="uri">The URI containing the query string.</param>
-    /// <param name="parameterName">The name of the parameter to find.</param>
-    /// <returns>The parameter value, or empty string if not found.</returns>
     public static string GetParameterSE(string uri, string parameterName)
     {
         parameterName = parameterName + "=";
@@ -59,13 +37,6 @@ public class QSHelper
         return "";
     }
 
-    /// <summary>
-    /// Builds a query string URL from a base address and alternating key-value parameter pairs.
-    /// All parameter values are automatically URL-encoded.
-    /// </summary>
-    /// <param name="baseUrl">The base URL without a trailing question mark.</param>
-    /// <param name="parameters">Alternating key-value pairs for the query string.</param>
-    /// <returns>The complete URL with query string.</returns>
     public static string GetQS(string baseUrl, params string[] parameters)
     {
         var list = parameters.ToList();
@@ -85,12 +56,6 @@ public class QSHelper
         return stringBuilder.ToString().TrimEnd('&');
     }
 
-    /// <summary>
-    /// Builds a query string URL from a base address and a dictionary of parameters.
-    /// </summary>
-    /// <param name="baseUrl">The base URL without a trailing question mark.</param>
-    /// <param name="parameters">Dictionary of parameter key-value pairs.</param>
-    /// <returns>The complete URL with query string.</returns>
     public static string GetQS(string baseUrl, Dictionary<string, string> parameters)
     {
         var stringBuilder = new StringBuilder();
@@ -101,12 +66,6 @@ public class QSHelper
         return stringBuilder.ToString().TrimEnd('&');
     }
 
-    /// <summary>
-    /// Normalizes a query string by sorting parameters alphabetically.
-    /// Returns null for tracking-related query strings (contextkey, guid, SelectingPhotos).
-    /// </summary>
-    /// <param name="text">The query string to normalize (without leading question mark).</param>
-    /// <returns>The normalized query string, or null for tracking requests.</returns>
     public static string? GetNormalizeQS(string text)
     {
         if (text.Length != 0)
@@ -116,18 +75,12 @@ public class QSHelper
 
             var parts = new List<string>(text.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries));
             parts.Sort();
-            text = string.Join('&', parts.ToArray());
+            text = string.Join("&", parts.ToArray());
         }
 
         return text;
     }
 
-    /// <summary>
-    /// Parses a query string into a dictionary of key-value pairs.
-    /// Must receive just the query string without URI path. Use UH.GetQueryAsHttpRequest before calling.
-    /// </summary>
-    /// <param name="queryString">The query string to parse.</param>
-    /// <returns>A dictionary of parameter names and values.</returns>
     public static Dictionary<string, string> ParseQs(string queryString)
     {
         queryString = queryString.TrimStart('?');
@@ -138,12 +91,6 @@ public class QSHelper
         return DictionaryHelper.GetDictionaryByKeyValueInString(parts);
     }
 
-    /// <summary>
-    /// Serializes a list of parameters into a JavaScript Array constructor call.
-    /// </summary>
-    /// <param name="list">The list of parameters to serialize.</param>
-    /// <param name="stringBuilder">The StringBuilder to append to.</param>
-    /// <param name="isQuoted">Whether to wrap values in double quotes.</param>
     public static void GetArray(List<string> list, StringBuilder stringBuilder, bool isQuoted)
     {
         stringBuilder.Append("new Array(");
@@ -171,11 +118,6 @@ public class QSHelper
         stringBuilder.Append(")");
     }
 
-    /// <summary>
-    /// Parses a NameValueCollection into a dictionary.
-    /// </summary>
-    /// <param name="nameValueCollection">The NameValueCollection to parse.</param>
-    /// <returns>A dictionary of keys and values.</returns>
     public static Dictionary<string, string> ParseQs(NameValueCollection nameValueCollection)
     {
         var dictionary = new Dictionary<string, string>();
