@@ -15,9 +15,9 @@ internal class SHSubstring
     /// <returns>The extracted substring, or empty string if indices are out of range.</returns>
     internal static string? Substring(string? text, int indexFrom, int indexTo, SubstringArgs? substringArgs = null)
     {
-        if (substringArgs == null) substringArgs = SubstringArgs.Instance;
+        substringArgs ??= SubstringArgs.Instance;
 
-        if (text == null) return null;
+        if (text is null) return null;
 
         var textLength = text.Length;
 
