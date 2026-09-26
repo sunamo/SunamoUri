@@ -41,6 +41,6 @@ public partial class UH
     public static bool IsUri(ILogger logger, string text)
     {
         var uri = CreateUri(logger, text);
-        return uri != null;
+        return uri is not null;
     }
 }

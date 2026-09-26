@@ -75,9 +75,6 @@ public partial class UH
             return result;
         }
 
-#if !DEBUG
-        return "https://sunamo.cz";
-#endif
         return "https://sunamo.net";
     }
 

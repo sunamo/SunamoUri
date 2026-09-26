@@ -257,7 +257,7 @@ public partial class UH
     /// <returns>The combined URI.</returns>
     public static string Combine(bool isDirectory, params string[] segments)
     {
-        var result = string.Join('/', segments).Replace("///", "/").Replace("//", "/").TrimEnd('/').Replace(":/", "://");
+        var result = string.Join("/", segments).Replace("///", "/").Replace("//", "/").TrimEnd('/').Replace(":/", "://");
         if (isDirectory)
             result += "/";
         return result;
@@ -270,7 +270,7 @@ public partial class UH
     /// <returns>The joined path.</returns>
     private static string Join(params string[] segments)
     {
-        return string.Join('/', segments);
+        return string.Join("/", segments);
     }
 
     /// <summary>

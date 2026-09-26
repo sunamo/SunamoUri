@@ -116,7 +116,7 @@ public class QSHelper
 
             var parts = new List<string>(text.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries));
             parts.Sort();
-            text = string.Join('&', parts.ToArray());
+            text = string.Join("&", parts.ToArray());
         }
 
         return text;
