@@ -1,5 +1,10 @@
 # SunamoUri
 
+## Short description
+
+Knihovna pro práci s URL a URI: manipulace, kódování a dekódování, parsování query stringu a sanitizace adres. Součást sbírky pinp s testy a Runnerem.
+
+
 A .NET library for working with URLs (Uniform Resource Locators / Identifiers). Provides comprehensive URI manipulation, encoding/decoding, query string parsing, and URL sanitization utilities.
 
 ## Overview
