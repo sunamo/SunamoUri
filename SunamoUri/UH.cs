@@ -67,7 +67,7 @@ public partial class UH
         var stringBuilder = new StringBuilder(text);
         stringBuilder[0] = char.ToUpper(stringBuilder[0]);
         text = stringBuilder.ToString();
-        if (text != Translate.FromKey(XlfKeys.Nope))
+        if (text != "Nope")
         {
             var fields = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly).ToList();
             var matchingField = fields.Where(fieldInfo => fieldInfo.Name.StartsWith(text)).First();
