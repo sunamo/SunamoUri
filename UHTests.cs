@@ -1,4 +1,3 @@
-// variables names: ok
 
 
 public class UHTests
