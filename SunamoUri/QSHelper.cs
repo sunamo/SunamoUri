@@ -1,7 +1,16 @@
 namespace SunamoUri;
 
+/// <summary>
+/// Represents the QS helper type.
+/// </summary>
 public class QSHelper
 {
+    /// <summary>
+    /// Get parameter.
+    /// </summary>
+    /// <param name="uri">The uri.</param>
+    /// <param name="parameterName">The parameter name.</param>
+    /// <returns>The get parameter result.</returns>
     public static string? GetParameter(string uri, string parameterName)
     {
         var parts = uri.Split(new[] { "?", "&" }, StringSplitOptions.RemoveEmptyEntries);
@@ -14,6 +23,11 @@ public class QSHelper
         return null;
     }
 
+    /// <summary>
+    /// Remove qs.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns>The remove qs result.</returns>
     public static string RemoveQs(string text)
     {
         var questionMarkIndex = text.IndexOf('?');
@@ -21,6 +35,12 @@ public class QSHelper
         return text;
     }
 
+    /// <summary>
+    /// Get parameter SE.
+    /// </summary>
+    /// <param name="uri">The uri.</param>
+    /// <param name="parameterName">The parameter name.</param>
+    /// <returns>The get parameter SE result.</returns>
     public static string GetParameterSE(string uri, string parameterName)
     {
         parameterName = parameterName + "=";
@@ -37,6 +57,12 @@ public class QSHelper
         return "";
     }
 
+    /// <summary>
+    /// Get QS.
+    /// </summary>
+    /// <param name="baseUrl">The base url.</param>
+    /// <param name="parameters">The parameters.</param>
+    /// <returns>The get QS result.</returns>
     public static string GetQS(string baseUrl, params string[] parameters)
     {
         var list = parameters.ToList();
@@ -56,6 +82,12 @@ public class QSHelper
         return stringBuilder.ToString().TrimEnd('&');
     }
 
+    /// <summary>
+    /// Get QS.
+    /// </summary>
+    /// <param name="baseUrl">The base url.</param>
+    /// <param name="parameters">The parameters.</param>
+    /// <returns>The get QS result.</returns>
     public static string GetQS(string baseUrl, Dictionary<string, string> parameters)
     {
         var stringBuilder = new StringBuilder();
@@ -66,6 +98,11 @@ public class QSHelper
         return stringBuilder.ToString().TrimEnd('&');
     }
 
+    /// <summary>
+    /// Get normalize QS.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns>The get normalize QS result.</returns>
     public static string? GetNormalizeQS(string text)
     {
         if (text.Length != 0)
@@ -81,6 +118,11 @@ public class QSHelper
         return text;
     }
 
+    /// <summary>
+    /// Parse qs.
+    /// </summary>
+    /// <param name="queryString">The query string.</param>
+    /// <returns>The parse qs result.</returns>
     public static Dictionary<string, string> ParseQs(string queryString)
     {
         queryString = queryString.TrimStart('?');
@@ -91,6 +133,12 @@ public class QSHelper
         return DictionaryHelper.GetDictionaryByKeyValueInString(parts);
     }
 
+    /// <summary>
+    /// Get array.
+    /// </summary>
+    /// <param name="list">The list.</param>
+    /// <param name="stringBuilder">The string builder.</param>
+    /// <param name="isQuoted">The is quoted.</param>
     public static void GetArray(List<string> list, StringBuilder stringBuilder, bool isQuoted)
     {
         stringBuilder.Append("new Array(");
@@ -118,6 +166,11 @@ public class QSHelper
         stringBuilder.Append(")");
     }
 
+    /// <summary>
+    /// Parse qs.
+    /// </summary>
+    /// <param name="nameValueCollection">The name value collection.</param>
+    /// <returns>The parse qs result.</returns>
     public static Dictionary<string, string> ParseQs(NameValueCollection nameValueCollection)
     {
         var dictionary = new Dictionary<string, string>();

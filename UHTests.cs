@@ -1,4 +1,3 @@
-// variables names: ok
 
 
 public class UHTests
@@ -38,7 +37,7 @@ public class UHTests
     public void UrlEncodeTest()
     {
         /*
-Pokud správně užívám UrlEncode/Decode ani plus ve vstupním řetězci nemůže způsobit žádné škody
+ If I use UrlEncode/Decode correctly, not even a plus in the input string can cause any harm
 
          */
 

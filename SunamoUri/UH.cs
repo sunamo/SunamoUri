@@ -67,7 +67,7 @@ public partial class UH
         var stringBuilder = new StringBuilder(text);
         stringBuilder[0] = char.ToUpper(stringBuilder[0]);
         text = stringBuilder.ToString();
-        if (text != Translate.FromKey(XlfKeys.Nope))
+        if (text != "Nope")
         {
             var fields = typeof(UriShortConsts).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly).ToList();
             var matchingField = fields.Where(fieldInfo => fieldInfo.Name.StartsWith(text)).First();
@@ -318,6 +318,16 @@ public partial class UH
         }
 
         return result.ToString().TrimEnd('/');
+    }
+
+    /// <summary>
+    /// Combines URI segments from a list and returns the result without a trailing slash.
+    /// </summary>
+    /// <param name="segments">The URI segments to combine.</param>
+    /// <returns>The combined URI without a trailing slash.</returns>
+    public static string CombineTrimEndSlash(IList<string> segments)
+    {
+        return CombineTrimEndSlash(segments.ToArray());
     }
 
     /// <summary>
