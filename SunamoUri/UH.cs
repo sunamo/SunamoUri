@@ -321,6 +321,16 @@ public partial class UH
     }
 
     /// <summary>
+    /// Combines URI segments from a list and returns the result without a trailing slash.
+    /// </summary>
+    /// <param name="segments">The URI segments to combine.</param>
+    /// <returns>The combined URI without a trailing slash.</returns>
+    public static string CombineTrimEndSlash(IList<string> segments)
+    {
+        return CombineTrimEndSlash(segments.ToArray());
+    }
+
+    /// <summary>
     /// URL-encodes the text after trimming whitespace.
     /// </summary>
     /// <param name="text">The text to encode.</param>
